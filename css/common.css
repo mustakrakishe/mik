@@ -1,0 +1,30 @@
+*{
+    color: rgb(192, 192, 192);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background-color: rgb(63, 63, 63);
+    margin: 0;
+}
+
+.content{
+    width: 100%;
+    max-width: 820px;
+    margin: 0 auto;
+}
+
+#header{
+    height: 50px;
+    min-width: 820px;
+    padding: auto 5px;
+    background-color: rgb(87, 87, 87);
+}
+
+h1, h2{
+    text-align: center;
+};
+
+input{
+    color: black;
+}
