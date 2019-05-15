@@ -1,6 +1,5 @@
 <?php require 'php/common/head.php'; ?>
 <link rel="stylesheet" href="css/chart.css">
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="js/chart.js"></script>
 
 <h1>График</h1>
@@ -15,5 +14,9 @@
     <div id="chart"></div>
     <select name="channels" id="channels"></select>
 </div>
+
+<?php
+    //$path = 'data/2018/display.dat';
+?>
 
 <?php require 'php/common/foot.php'; ?>
