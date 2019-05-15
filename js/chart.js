@@ -1,17 +1,21 @@
 $(document).ready(function () {
     var date = $('[name=date]').val();
-    getDisplays(date);
+    var displays = getDisplays(date);
+    //setDisplayList();
 });
 
 function getDisplays(date) {
+    var displays = false;
+
     $.ajax({
         url: "../php/chart/getDisplays.php",
         data: { date: date },
         type: "GET",
         dataType: "json",
+        async: false
     })
-        .done(function (displays) {
-            alert(displays[0].name);
+        .done(function (response) {
+            displays = response;
         })
         .fail(function (xhr, status, errorThrown) {
             alert("Ошибка запроса информации о дислеях.");
@@ -19,4 +23,6 @@ function getDisplays(date) {
             console.log("Status: " + status);
             console.dir(xhr);
         })
+
+    return displays;
 }
