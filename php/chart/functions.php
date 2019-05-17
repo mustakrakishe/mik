@@ -1,9 +1,44 @@
 <?php
-    function myFunc(){
-        $a = 5 + 3;
+    function getChannels($path){
+        $channels = [];
+
+        class channel{
+            public $name = '';
+            public $units = '';
+
+            function __construct($name, $units){
+                $this->name = $name;
+                $this->units = $units;
+            }
+        }
+        $handle = fopen($path, 'r');
+
+        while(!feof($handle)){
+            $string = iconv("windows-1251","utf-8", fgets($handle));
+            /*list(
+                $name,
+                ,
+                $units,
+                $scaleL,
+                $scaleH,
+                $techL,
+                $techH,
+                $crushL,
+                $crushH,
+                $arch
+            ) = preg_split('@[\\\/(,);\[|#$:~]|(]R>0<)@', $string);*/
+            
+            if((int)substr($string, strpos($string, '<') + 1, 1)){
+                list($name, , $units, , $arch) = preg_split('@[\\\/(<#]@', $string);
+                array_push($channels, new channel($name, $units));
+            }
+        }
+
+        fclose($handle);
+        return $channels;
     }
 
-    function getDisplays($date){
+    function getDisplays($path){
         $displays = [];
 
         class display{
@@ -18,21 +53,19 @@
             }
         }
 
-        $dateArr = explode('-', $date);
-        $path = $_SERVER['DOCUMENT_ROOT'] . '/data/' . $dateArr[0] . '/display.dat';
-        //$path = '../../data/2018/display.dat';
         $handle = fopen($path, 'r');
 
         fgets($handle);
         while(!feof($handle)){
-            $num = substr(fgets($handle), 1);
+            $num = (int)substr(fgets($handle), 1);
 
             if($num > 1279 && $num < 1536){
                 fgets($handle);
                 $channels = explode(';', substr(fgets($handle), 2, -3));
-                $name = substr(iconv("windows-1251","utf-8", fgets($handle)), 2);
+                $name = substr(iconv("windows-1251","utf-8", fgets($handle)), 2, -2);
 
                 array_push($displays, new display($num, $name, $channels));
+                
                 fgets($handle);
             }
             else{

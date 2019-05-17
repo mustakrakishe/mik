@@ -6,13 +6,13 @@
 
 <form action="" method="post">
     <input type="date" name="date" value="2018-05-11">
-    <select name="display" id="display"></select>
+    <select name="display"></select>
     <input type="submit" name="build_btn" hidden="hidden">
 </form>
 
 <div id="chartRow">
     <div id="chart"></div>
-    <select name="channels" id="channels"></select>
+    <select multiple name="channels"></select>
 </div>
 
 <?php

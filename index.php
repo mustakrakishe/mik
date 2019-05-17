@@ -4,15 +4,11 @@
 
 <?php
     require 'php/chart/functions.php';
-    $date = '2018-05-11';
-    $displays = getDisplays($date);
-
-    echo 'Дисплеи:<br><br>';
-    foreach($displays as $display){
-        echo 'Номер: ', $display->num, '<br>';
-        echo 'Имя: ', $display->name, '<br>';
-        echo 'Каналы: ', implode('; ', $display->channels), '<br><br>';
-    }
+    $path = 'data/2018/display.dat';
+    $displays = getDisplays($path);
+    
+    echo $displays[1]->channels[0], '<br>';
+    echo gettype($displays[1]->channels[0]);
 ?>
 
 <?php require 'php/common/foot.php'; ?>

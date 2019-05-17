@@ -1,6 +1,8 @@
 <?php
     $date = $_GET['date'];
+    $dateArr = explode('-', $date);
+    $path = $_SERVER['DOCUMENT_ROOT'] . '/data/' . $dateArr[0] . '/display.dat';
     require 'functions.php';
 
-    echo json_encode(getDisplays($date));
+    echo json_encode(getDisplays($path));
 ?>
