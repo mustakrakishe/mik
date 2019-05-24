@@ -15,8 +15,4 @@
     <select multiple name="channels"></select>
 </div>
 
-<?php
-    //$path = 'data/2018/display.dat';
-?>
-
 <?php require 'php/common/foot.php'; ?>

@@ -80,51 +80,34 @@
         return $displays;
     }
 
-    function getArchPoints ($date, $timeB, $timeE, $channel){
-        $archPoints = [];
-        $channel--;
+    function getChannelData($path, $channels){
+        $channelData = [];
 
         $SIZE_CHANNEL_COUNT = 2;
         $SIZE_DATE = 16;
         $SIZE_CONF = 61;
         $SIZE_VALUE = 4;
         
-        $dateArr = (explode('-', $date));
-        $fileName = $dateArr[2].$dateArr[1].'.arh';
-        $path = "data/$dateArr[0]/";
-        $fileFullName = $path.$fileName;
+        $file_data = fopen($path, 'rb');
+        $file_channelCount = unpack('S*', fread($file_data, $SIZE_CHANNEL_COUNT), 0)[1];
+        $size_serviceData = $SIZE_CHANNEL_COUNT+$SIZE_DATE+$SIZE_CONF*$file_channelCount;
+        $channelPointsCount = (filesize($path)-$size_serviceData)/($SIZE_VALUE*$file_channelCount)-1;
+        $interval = 86400/$channelPointsCount;
+        $shift = $SIZE_VALUE*$file_channelCount;
 
-        if (!file_exists($fileFullName)){
-            return false;
-        }
-        else{
-            $file_data = fopen($fileFullName, 'rb');
-            $channelCount = unpack('S*', fread($file_data, $SIZE_CHANNEL_COUNT), 0)[1];
-            $size_serviceData = $SIZE_CHANNEL_COUNT+$SIZE_DATE+$SIZE_CONF*$channelCount;
-            $PointTotalCount = (filesize($fileFullName)-$size_serviceData)/($SIZE_VALUE*$channelCount)-1;
-            $interval = 86400/$PointTotalCount;
-            $shift = $SIZE_VALUE*$channelCount;
-
-            fseek($file_data, $size_serviceData);
-
-            for ($i=0; $i<$PointTotalCount; $i++){
+        fseek($file_data, $size_serviceData);
+        foreach($channels as $channel){
+            $channelPoints = [];
+            for ($i=0; $i<$channelPointsCount; $i++){
                 $time = gmdate('H:i:s',  $interval*$i);
-                if ($time < $timeB){
-                    continue;
-                }
-                elseif ($time <= $timeE){
-                    fseek($file_data, $size_serviceData + $shift * $i + $SIZE_VALUE * $channel);
-                    $value = round(unpack('f*', fread($file_data, $SIZE_VALUE), SEEK_SET)[1], 3);
-                    array_push($archPoints, [$time, $value]);
-                }
-                elseif($time > $timeE){
-                    break;
-                }
+                fseek($file_data, $size_serviceData + $shift * $i + $SIZE_VALUE * $channel);
+                $value = round(unpack('f*', fread($file_data, $SIZE_VALUE), SEEK_SET)[1], 3);
+                array_push($channelPoints, [$time, $value]);
             }
+            array_push($channelData, $channelPoints);
+        }
             
         fclose($file_data);
-        return $archPoints;
-        }
-        
+        return $channelData;
     }
 ?>

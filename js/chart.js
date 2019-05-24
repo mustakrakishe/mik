@@ -5,7 +5,11 @@ $(document).ready(function () {
     var displays = getDisplays(date);
     setDisplayList(displays);
     var activeDisplay = $('[name=display] option:selected').val();
-    selectChannels(displays[activeDisplay].channels)
+    //Преобразовать объект activeDisplay в массив
+    var activeChannels = Array.from(displays[activeDisplay].channels);
+    selectChannels(activeChannels);
+    var channelData = getChannelData(activeChannels, date);
+    //buildGraph(channelData);
 });
 
 function getChannels(date) {
@@ -65,4 +69,46 @@ function selectChannels(channels) {
         var num = parseInt(channel) + 1;
         $('[name=channels] :nth-child(' + (parseInt(channel) + 1) + ')').attr("selected", "selected");
     })
+}
+
+function getChannelData(channels, date) {
+    var channelData = false;
+
+    $.ajax({
+        url: "../php/chart/getChannelData.php",
+        data: {
+            channels: channels,
+            date: date
+        },
+        type: "GET",
+        dataType: "json",
+        async: false
+    })
+        .done(function (response) {
+            channelData = response;
+        })
+        .fail(function () {
+            alert("Ошибка запроса данных каналов.");
+        })
+
+    return channelData;
+}
+
+function buildGraph(graphData){
+    var chart = anychart.line();
+        chart.defaultSeriesType("line");
+
+        graphData.forEach(function (channelPoints, i, graphData){
+            var data = anychart.data.set(channelPoints);
+            var series = data.mapAs({x: 0, value: 1});
+            chart.addSeries(series);
+        });
+        
+        var xAxis = chart.xAxis();
+        xAxis.title("Абсолютное значение параметра");
+        var yAxis = chart.yAxis();
+        yAxis.title("Время");
+        
+        chart.container("container");
+        chart.draw();
 }
