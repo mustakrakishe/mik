@@ -3,10 +3,6 @@ $(document).ready(function () {
 });
 
 function initialization() {
-    $.ajax({
-        url: "../php/chart/init.php",
-        async: false
-    })
 
     var date = $('[name=date]').val();
     var channels = getChannels(date);
@@ -14,7 +10,7 @@ function initialization() {
     var displays = getDisplays(date);
     setDisplayList(displays);
     var activeDisplay = $('[name=display] option:selected').val();
-    var activeChannels = Array.from(displays[activeDisplay].channels);
+    var activeChannels = displays[activeDisplay].channels;
     selectChannels(activeChannels);
     var channelData = getChannelData(activeChannels, date);
     buildGraph(channelData);
