@@ -7,14 +7,20 @@
 <script src="js/anychart/anychart-ui.min.js"></script>
 <script src="js/anychart/anychart-exports.min.js"></script>
 
-<script>
-    var arr = Array.from({
-        0: {0: "01.01.2019", 1: 11111.01},
-        1: {0: "02.01.2019", 1: 22222.02},
-        2: {0: "03.01.2019", 1: 33333.03}
-    });
+<?php require 'php/chart/init.php'; ?>
+<?php require 'php/chart/getChannelData.php'; ?>
 
-    alert (typeof(arr));
-</script>
+<?php
+    $path = 'data/2018/1105.arh';
+    $channels = [0, 1, 2, 3, 4, 5, 6, 7];
+
+    $channelData =  getChannelData($path, $channels);
+    foreach($channelData as $key => $channel){
+        echo '<br>', 'КАНАЛ ', $key, '<br>';
+        foreach($channel as $point){
+            echo $point[0], ' ', $point[1], '<br>';
+        }
+    }
+?>
 
 <?php require 'php/common/foot.php'; ?>

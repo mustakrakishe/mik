@@ -1,16 +1,24 @@
 $(document).ready(function () {
+    initialization();
+});
+
+function initialization() {
+    $.ajax({
+        url: "../php/chart/init.php",
+        async: false
+    })
+
     var date = $('[name=date]').val();
     var channels = getChannels(date);
     setChannelList(channels);
     var displays = getDisplays(date);
     setDisplayList(displays);
     var activeDisplay = $('[name=display] option:selected').val();
-    //Преобразовать объект activeDisplay в массив
     var activeChannels = Array.from(displays[activeDisplay].channels);
     selectChannels(activeChannels);
     var channelData = getChannelData(activeChannels, date);
-    //buildGraph(channelData);
-});
+    buildGraph(channelData);
+}
 
 function getChannels(date) {
     var channels = false;
@@ -86,29 +94,35 @@ function getChannelData(channels, date) {
     })
         .done(function (response) {
             channelData = response;
+            alert(channelData);
         })
-        .fail(function () {
-            alert("Ошибка запроса данных каналов.");
+        .fail(function (xhr, status, errorThrown) {
+            alert(
+                'Ошибка запроса данных каналов.\n' +
+                "Error: " + errorThrown + '\n' +
+                "Status: " + status + '\n' +
+                xhr
+            )
         })
 
     return channelData;
 }
 
-function buildGraph(graphData){
+function buildGraph(graphData) {
     var chart = anychart.line();
-        chart.defaultSeriesType("line");
+    chart.defaultSeriesType("line");
 
-        graphData.forEach(function (channelPoints, i, graphData){
-            var data = anychart.data.set(channelPoints);
-            var series = data.mapAs({x: 0, value: 1});
-            chart.addSeries(series);
-        });
-        
-        var xAxis = chart.xAxis();
-        xAxis.title("Абсолютное значение параметра");
-        var yAxis = chart.yAxis();
-        yAxis.title("Время");
-        
-        chart.container("container");
-        chart.draw();
+    graphData.forEach(function (channelPoints, i, graphData) {
+        var data = anychart.data.set(channelPoints);
+        var series = data.mapAs({ x: 0, value: 1 });
+        chart.addSeries(series);
+    });
+
+    var xAxis = chart.xAxis();
+    xAxis.title("Абсолютное значение параметра");
+    var yAxis = chart.yAxis();
+    yAxis.title("Время");
+
+    chart.container("container");
+    chart.draw();
 }
