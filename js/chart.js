@@ -8,6 +8,7 @@ $(document).ready(function () {
     var activeChannels = displays[activeDisplay].channels;
     selectChannels(activeChannels);
     var channelData = getChannelData(activeChannels, date);
+    alert (channelData[0][0]);
     buildGraph(channelData);
 });
 
@@ -101,22 +102,38 @@ function getChannelData(channels, date) {
 function buildGraph(graphData) {
     var chart = anychart.stock();
 
-    //Захуярить данные
-    var array = [
-        [0, 27.5],
-        [1, 25.0],
-        [3, 26.8]
-    ];
-
-    var data = anychart.data.set(array);
-    var series = data.mapAs({ x: 0, value: 1 });
-    chart.plot(0).line(series).name('Какая-то хня');
-
-    var xAxis = chart.xAxis();
-    xAxis.title("Абсолютное значение параметра");
-    var yAxis = chart.yAxis();
-    yAxis.title("Время");
-
-    chart.container("chart");
+    var arr = [[
+        ["2015-12-25", 512.53],
+        ["2015-12-26", 511.83],
+        ["2015-12-27", 511.22],
+        ["2015-12-28", 510.35],
+        ["2015-12-29", 510.53],
+        ["2015-12-30", 511.43],
+        ["2015-12-31", 511.50],
+        ["2016-01-01", 511.32],
+        ["2016-01-02", 511.70],
+    ],[
+        ["2015-12-25", 514.88],
+        ["2015-12-26", 514.98],
+        ["2015-12-27", 515.30],
+        ["2015-12-28", 515.72],
+        ["2015-12-29", 515.86],
+        ["2015-12-30", 515.98],
+        ["2015-12-31", 515.33],
+        ["2016-01-01", 514.29],
+        ["2016-01-02", 514.87]
+    ]];
+    
+    var chart = anychart.stock();
+    chart.title('AnyStock Basic Sample');
+    chart.container('chart');
     chart.draw();
+
+    var firstPlot = chart.plot(0);
+    
+    graphData.forEach(function(channel, channelNum, channels){
+        var dataTable = anychart.data.table(0);
+        dataTable.addData(channels[channelNum]);
+        firstPlot.line(dataTable.mapAs({value: 1}));
+    })
 }

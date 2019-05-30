@@ -100,10 +100,10 @@
             $channelPoints = [];
             $channelPointsCoun = 2;
             for ($i=0; $i<$channelPointsCount; $i++){
-                $time = gmdate('H:i:s',  $interval*$i);
+                $time = gmdate('Y-m-d H:i:s',  $interval*$i);
                 fseek($file_data, $size_serviceData + $shift * $i + $SIZE_VALUE * $channel);
                 $value = round(unpack('f*', fread($file_data, $SIZE_VALUE), SEEK_SET)[1], 3);
-                array_push($channelPoints, [$time, 1.324]);
+                array_push($channelPoints, [$time, $value]);
             }
             array_push($channelData, $channelPoints);
         }
