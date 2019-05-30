@@ -15,7 +15,6 @@
 <div id="container"></div>
 
 <script>
-	var table, mapping, chart;
 	anychart.onDocumentReady(function () {
     
 		
@@ -41,7 +40,7 @@
 			["2016-01-02", 514.87]
 		]];
 		
-		chart = anychart.stock();
+		var chart = anychart.stock();
 		chart.title('AnyStock Basic Sample');
 		chart.container('container');
 		chart.draw();
