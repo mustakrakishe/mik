@@ -1,9 +1,4 @@
 $(document).ready(function () {
-    initialization();
-});
-
-function initialization() {
-
     var date = $('[name=date]').val();
     var channels = getChannels(date);
     setChannelList(channels);
@@ -14,7 +9,7 @@ function initialization() {
     selectChannels(activeChannels);
     var channelData = getChannelData(activeChannels, date);
     buildGraph(channelData);
-}
+});
 
 function getChannels(date) {
     var channels = false;
@@ -90,7 +85,6 @@ function getChannelData(channels, date) {
     })
         .done(function (response) {
             channelData = response;
-            alert(channelData);
         })
         .fail(function (xhr, status, errorThrown) {
             alert(
@@ -105,20 +99,24 @@ function getChannelData(channels, date) {
 }
 
 function buildGraph(graphData) {
-    var chart = anychart.line();
-    chart.defaultSeriesType("line");
+    var chart = anychart.stock();
 
-    graphData.forEach(function (channelPoints, i, graphData) {
-        var data = anychart.data.set(channelPoints);
-        var series = data.mapAs({ x: 0, value: 1 });
-        chart.addSeries(series);
-    });
+    //Захуярить данные
+    var array = [
+        [0, 27.5],
+        [1, 25.0],
+        [3, 26.8]
+    ];
+
+    var data = anychart.data.set(array);
+    var series = data.mapAs({ x: 0, value: 1 });
+    chart.plot(0).line(series).name('Какая-то хня');
 
     var xAxis = chart.xAxis();
     xAxis.title("Абсолютное значение параметра");
     var yAxis = chart.yAxis();
     yAxis.title("Время");
 
-    chart.container("container");
+    chart.container("chart");
     chart.draw();
 }

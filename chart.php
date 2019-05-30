@@ -1,6 +1,11 @@
 <?php require 'php/common/head.php'; ?>
 <link rel="stylesheet" href="css/chart.css">
-<script src="js/chart.js"></script>
+<script src='js/jquery-3.3.1.min.js'></script>
+<script src='js/chart.js'></script>
+
+<script src='js/anychart/anychart-core.min.js'></script>
+<script src='js/anychart/anychart-stock.min.js'></script>
+<script src='js/anychart/anychart-exports.min.js'></script>
 
 <h1>График</h1>
 

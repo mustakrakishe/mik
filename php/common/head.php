@@ -4,7 +4,6 @@
         <meta charset="utf-8" />
         <title>Мик-Регистратор</title>
         <link rel="stylesheet" href="css/common.css">
-        <script src='js/jquery-3.3.1.min.js'></script>
     </head>
     <body>
     <?php
