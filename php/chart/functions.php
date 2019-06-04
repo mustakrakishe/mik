@@ -88,27 +88,28 @@
         $SIZE_CONF = 61;
         $SIZE_VALUE = 4;
         
-        $file_data = fopen($path, 'rb');
-        $file_channelCount = unpack('S*', fread($file_data, $SIZE_CHANNEL_COUNT), 0)[1];
+        $date = str_split(basename($path, ".arh"), 2);
+        $fileHandler = fopen($path, 'rb');
+        $file_channelCount = unpack('S*', fread($fileHandler, $SIZE_CHANNEL_COUNT), 0)[1];
         $size_serviceData = $SIZE_CHANNEL_COUNT+$SIZE_DATE+$SIZE_CONF*$file_channelCount;
         $channelPointsCount = (filesize($path)-$size_serviceData)/($SIZE_VALUE*$file_channelCount)-1;
         $interval = 86400/$channelPointsCount;
         $shift = $SIZE_VALUE*$file_channelCount;
 
-        fseek($file_data, $size_serviceData);
+        fseek($fileHandler, $size_serviceData);
         foreach($channels as $channel){
             $channelPoints = [];
             $channelPointsCoun = 2;
             for ($i=0; $i<$channelPointsCount; $i++){
                 $time = gmdate('Y-m-d H:i:s',  $interval*$i);
-                fseek($file_data, $size_serviceData + $shift * $i + $SIZE_VALUE * $channel);
-                $value = round(unpack('f*', fread($file_data, $SIZE_VALUE), SEEK_SET)[1], 3);
+                fseek($fileHandler, $size_serviceData + $shift * $i + $SIZE_VALUE * $channel);
+                $value = round(unpack('f*', fread($fileHandler, $SIZE_VALUE), SEEK_SET)[1], 3);
                 array_push($channelPoints, [$time, $value]);
             }
             array_push($channelData, $channelPoints);
         }
             
-        fclose($file_data);
+        fclose($fileHandler);
         return $channelData;
     }
 ?>
