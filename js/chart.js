@@ -21,9 +21,6 @@ $(document).ready(function () {
                 displays = getDisplays(date);
                 setDisplayList(displays);
             }
-            activeDisplay = $('[name=display] option:selected').val();
-            activeChannels = displays[activeDisplay].channels;
-            selectChannels(activeChannels);
             channelData = getChannelData(activeChannels, newDate);
             channelNames = getChannelNames(channels, activeChannels);
             buildGraph(channelData, channelNames);
@@ -36,6 +33,13 @@ $(document).ready(function () {
         activeDisplay = $('[name=display] option:selected').val();
         activeChannels = displays[activeDisplay].channels;
         selectChannels(activeChannels);
+        channelData = getChannelData(activeChannels, date);
+        channelNames = getChannelNames(channels, activeChannels);
+        buildGraph(channelData, channelNames);
+    });
+
+    $('[name=channels]').change(function (event) {
+        activeChannels = $('[name=channels]').val();
         channelData = getChannelData(activeChannels, date);
         channelNames = getChannelNames(channels, activeChannels);
         buildGraph(channelData, channelNames);
