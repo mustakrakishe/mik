@@ -10,6 +10,37 @@ $(document).ready(function () {
     var channelData = getChannelData(activeChannels, date);
     var channelNames = getChannelNames(channels, activeChannels);
     buildGraph(channelData, channelNames);
+
+    //Если сменили год - проверяем список каналов. Го мазафака
+    $('form').submit(function (event) {
+        event.preventDefault();
+        var newDate = $('[name=date]').val();
+        if (date != newDate) {
+            if (date.substring(0, 4) != newDate.substring(0, 4)) {
+                channels = getChannels(newDate);
+                setChannelList(channels);
+                displays = getDisplays(date);
+                setDisplayList(displays);
+            }
+            activeDisplay = $('[name=display] option:selected').val();
+            activeChannels = displays[activeDisplay].channels;
+            selectChannels(activeChannels);
+            channelData = getChannelData(activeChannels, newDate);
+            channelNames = getChannelNames(channels, activeChannels);
+            buildGraph(channelData, channelNames);
+            date = newDate;
+        }
+    });
+
+    $('[name=display]').change(function (event) {
+        $('[name=channels] option:selected').removeAttr('selected');
+        activeDisplay = $('[name=display] option:selected').val();
+        activeChannels = displays[activeDisplay].channels;
+        selectChannels(activeChannels);
+        channelData = getChannelData(activeChannels, date);
+        channelNames = getChannelNames(channels, activeChannels);
+        buildGraph(channelData, channelNames);
+    });
 });
 
 function getChannels(date) {
@@ -66,7 +97,6 @@ function setDisplayList(displays) {
 
 function selectChannels(channels) {
     channels.forEach(function (channel, i, channels) {
-        var num = parseInt(channel) + 1;
         $('[name=channels] :nth-child(' + (parseInt(channel) + 1) + ')').attr("selected", "selected");
     })
 }
@@ -99,10 +129,10 @@ function getChannelData(channels, date) {
     return channelData;
 }
 
-function getChannelNames(channels, activeChannels){
+function getChannelNames(channels, activeChannels) {
     var channelNames = [];
 
-    activeChannels.forEach(function(channel, channelNum, activeChannels){
+    activeChannels.forEach(function (channel, channelNum, activeChannels) {
         channelNames.push(channels[channelNum].name);
     })
 
@@ -111,19 +141,17 @@ function getChannelNames(channels, activeChannels){
 
 function buildGraph(graphData, channelNames) {
     var chart = anychart.stock();
-    //chart.title('<input type="submit" value="Отправить">');
     chart.container('chart');
-
     var plot = chart.plot(0);
-    
-    graphData.forEach(function(channel, channelNum, channels){
+
+    graphData.forEach(function (channel, channelNum, channels) {
         var dataTable = anychart.data.table(0);
         dataTable.addData(channels[channelNum]);
-        plot.line(dataTable.mapAs({value: 1})).name(channelNames[channelNum]);
+        plot.line(dataTable.mapAs({ value: 1 })).name(channelNames[channelNum]);
     })
-    
+
     plot.legend().position('bottom');
     plot.legend().itemsLayout("horizontal-expandable");
-    
+
     chart.draw();
 }
