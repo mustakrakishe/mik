@@ -11,7 +11,6 @@ $(document).ready(function () {
     var channelNames = getChannelNames(channels, activeChannels);
     buildGraph(channelData, channelNames);
 
-    //Если сменили год - проверяем список каналов. Го мазафака
     $('form').submit(function (event) {
         event.preventDefault();
         var newDate = $('[name=date]').val();
@@ -131,18 +130,20 @@ function getChannelData(channels, date) {
 
 function getChannelNames(channels, activeChannels) {
     var channelNames = [];
-
-    activeChannels.forEach(function (channel, channelNum, activeChannels) {
-        channelNames.push(channels[channelNum].name);
+    activeChannels.forEach(function (channel) {
+        channelNames.push(channels[channel].name);
     })
 
     return channelNames;
 }
 
 function buildGraph(graphData, channelNames) {
+    $('#chart').empty();
     var chart = anychart.stock();
     chart.container('chart');
     var plot = chart.plot(0);
+    
+    plot.removeAllSeries();
 
     graphData.forEach(function (channel, channelNum, channels) {
         var dataTable = anychart.data.table(0);

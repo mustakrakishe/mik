@@ -61,7 +61,9 @@
 
             if($num > 1279 && $num < 1536){
                 fgets($handle);
-                $channels = explode(';', substr(fgets($handle), 2, -3));
+                $channels = array_filter(explode(';', substr(fgets($handle), 2, -3)), function($num){
+                    return $num>=0;
+                });
                 $name = substr(iconv("windows-1251","utf-8", fgets($handle)), 2, -2);
 
                 array_push($displays, new display($num, $name, $channels));
