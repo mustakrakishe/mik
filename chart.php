@@ -6,6 +6,7 @@
 <script src='js/anychart/anychart-core.min.js'></script>
 <script src='js/anychart/anychart-stock.min.js'></script>
 <script src='js/anychart/anychart-exports.min.js'></script>
+<script src='js/anychart/anychart-base.min.js'></script>
 
 <h1>График</h1>
 

@@ -3,13 +3,18 @@
 <h1>Главная</h1>
 
 <?php
-    $arr = [0, -2, 3, -18, 25, 30];
+    $path = 'data/2018/1105.arh';
 
-    $arr_positive = array_filter($arr, function($num){
-            return $num>=0;
-    });
+    /*require 'php/chart/functions.php';
+    $channels = [0];
+    $data = getChannelData($path, $channels);
+    for ($i = 0; $i < 20; $i++){
+        echo implode(' ', $data[0][$i]), '<br>';
+    }*/
 
-    print_r($arr_positive);
+    $date = strtotime(date('Y-m-d', filemtime($path)-1).' 00:00:00');
+    echo date('Y-m-d H:i:s', $date);
+    echo '<br>', $date;
 ?>
 
 <?php require 'php/common/foot.php'; ?>

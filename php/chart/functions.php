@@ -91,6 +91,7 @@
         $SIZE_VALUE = 4;
         
         $date = str_split(basename($path, ".arh"), 2);
+        filemtime($path);
         $fileHandler = fopen($path, 'rb');
         $file_channelCount = unpack('S*', fread($fileHandler, $SIZE_CHANNEL_COUNT), 0)[1];
         $size_serviceData = $SIZE_CHANNEL_COUNT+$SIZE_DATE+$SIZE_CONF*$file_channelCount;
@@ -101,12 +102,13 @@
         fseek($fileHandler, $size_serviceData);
         foreach($channels as $channel){
             $channelPoints = [];
-            $channelPointsCoun = 2;
             for ($i=0; $i<$channelPointsCount; $i++){
-                $time = gmdate('Y-m-d H:i:s',  $interval*$i);
+                $timestamp = (strtotime(date('Y-m-d', filemtime($path)-1).' 00:00:00') + $interval*$i)*1000;
+                
+                //$time = gmdate('Y-m-d H:i:s',  $interval*$i);
                 fseek($fileHandler, $size_serviceData + $shift * $i + $SIZE_VALUE * $channel);
                 $value = round(unpack('f*', fread($fileHandler, $SIZE_VALUE), SEEK_SET)[1], 3);
-                array_push($channelPoints, [$time, $value]);
+                array_push($channelPoints, [$timestamp, $value]);
             }
             array_push($channelData, $channelPoints);
         }
