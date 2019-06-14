@@ -4,17 +4,17 @@
 
 <?php
     $path = 'data/2018/1105.arh';
+    require 'php/chart/functions.php';
+    $channels = [0, 5, 20];
+    $data = getChannelData1($path, $channels);
 
-    /*require 'php/chart/functions.php';
-    $channels = [0];
-    $data = getChannelData($path, $channels);
-    for ($i = 0; $i < 20; $i++){
-        echo implode(' ', $data[0][$i]), '<br>';
-    }*/
-
-    $date = strtotime(date('Y-m-d', filemtime($path)-1).' 00:00:00');
-    echo date('Y-m-d H:i:s', $date);
-    echo '<br>', $date;
+    for ($pointNum = 0; $pointNum < 20; $pointNum++) {
+        echo date('Y-m-d H:i:s', $data[0][$pointNum]);
+        foreach($channels as $key => $channel){
+            echo ' ', $data[$key+1][$pointNum];
+        }
+        echo '<br>';
+    }
 ?>
 
 <?php require 'php/common/foot.php'; ?>

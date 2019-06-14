@@ -7,9 +7,18 @@ $(document).ready(function () {
     var activeDisplay = $('[name=display] option:selected').val();
     var activeChannels = displays[activeDisplay].channels;
     selectChannels(activeChannels);
-    var channelData = getChannelData(activeChannels, date);
     var channelNames = getChannelNames(channels, activeChannels);
+    var timeB = new Date();
+    /*var channelData = getChannelData(activeChannels, date);
     buildGraph(channelData, channelNames);
+    var time = new Date() - timeB;
+    alert ('Время операции: ' + time + ' мс');*/
+
+    
+    timeB = new Date();
+    var channelData1 = getChannelData1(activeChannels, date);
+    buildGraph1(channelData1, channelNames);
+    alert ('Время операции: ' + time + ' мс');
 
     $('form').submit(function (event) {
         event.preventDefault();
@@ -132,6 +141,34 @@ function getChannelData(channels, date) {
     return channelData;
 }
 
+function getChannelData1(channels, date) {
+    var channelData = false;
+
+    $.ajax({
+        url: "../php/chart/getChannelData1.php",
+        data: {
+            channels: channels,
+            date: date
+        },
+        type: "GET",
+        dataType: "json",
+        async: false
+    })
+        .done(function (response) {
+            channelData = response;
+        })
+        .fail(function (xhr, status, errorThrown) {
+            alert(
+                'Ошибка запроса данных каналов.\n' +
+                "Error: " + errorThrown + '\n' +
+                "Status: " + status + '\n' +
+                xhr
+            )
+        })
+
+    return channelData;
+}
+
 function getChannelNames(channels, activeChannels) {
     var channelNames = [];
     activeChannels.forEach(function (channel) {
@@ -172,9 +209,39 @@ function buildGraph(graphData, channelNames) {
     plot.legend().position('bottom');
     plot.legend().itemsLayout("horizontal-expandable");
 
-    //var labels = plot.xAxis().labels();
-    //chart.plot(0).xAxis().ticks(true).minorTicks(true);
-    //xScale.ticks().interval(10);
+    chart.draw();
+}
+
+function buildGraph1(graphData, channelNames) {
+    $('#chart').empty();
+    var chart = anychart.stock();
+    chart.container('chart');
+    var plot = chart.plot();
+
+    chart.xScale().minimumGap({
+        intervalsCount: 365,
+        unitType: 'day',
+        unitCount: 1
+    });
+
+    chart.xScale().maximumGap({
+        intervalsCount: 730,
+        unitType: 'day',
+        unitCount: 1
+    });
+    
+    chart.xScale('scatter');
+    
+    plot.removeAllSeries();
+
+    graphData.forEach(function (channel, channelNum, channels) {
+        var dataTable = anychart.data.table(0, 0, 2);
+        dataTable.addData(channels[channelNum]);
+        plot.line(dataTable.mapAs({ value: 1 })).name(channelNames[channelNum]);
+    })
+
+    plot.legend().position('bottom');
+    plot.legend().itemsLayout("horizontal-expandable");
 
     chart.draw();
 }
