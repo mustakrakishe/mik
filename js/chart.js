@@ -8,16 +8,18 @@ $(document).ready(function () {
     var activeChannels = displays[activeDisplay].channels;
     selectChannels(activeChannels);
     var channelNames = getChannelNames(channels, activeChannels);
-    var timeB = new Date();
-    /*var channelData = getChannelData(activeChannels, date);
+
+    /*var timeB = new Date();
+    var channelData = getChannelData(activeChannels, date);
     buildGraph(channelData, channelNames);
     var time = new Date() - timeB;
     alert ('Время операции: ' + time + ' мс');*/
-
     
-    timeB = new Date();
+    
+    var timeB = new Date();
     var channelData1 = getChannelData1(activeChannels, date);
     buildGraph1(channelData1, channelNames);
+    var time = new Date() - timeB;
     alert ('Время операции: ' + time + ' мс');
 
     $('form').submit(function (event) {
@@ -42,9 +44,13 @@ $(document).ready(function () {
         activeDisplay = $('[name=display] option:selected').val();
         activeChannels = displays[activeDisplay].channels;
         selectChannels(activeChannels);
-        channelData = getChannelData(activeChannels, date);
+        
+    var timeB = new Date();
+        channelData = getChannelData1(activeChannels, date);
         channelNames = getChannelNames(channels, activeChannels);
-        buildGraph(channelData, channelNames);
+        buildGraph1(channelData, channelNames);
+    var time = new Date() - timeB;
+    alert ('Время операции: ' + time + ' мс');
     });
 
     $('[name=channels]').change(function (event) {
@@ -217,28 +223,14 @@ function buildGraph1(graphData, channelNames) {
     var chart = anychart.stock();
     chart.container('chart');
     var plot = chart.plot();
-
-    chart.xScale().minimumGap({
-        intervalsCount: 365,
-        unitType: 'day',
-        unitCount: 1
-    });
-
-    chart.xScale().maximumGap({
-        intervalsCount: 730,
-        unitType: 'day',
-        unitCount: 1
-    });
-    
-    chart.xScale('scatter');
     
     plot.removeAllSeries();
+    
+    var dataTable = anychart.data.table(0, 0, 2);
+    dataTable.addData(graphData);
 
-    graphData.forEach(function (channel, channelNum, channels) {
-        var dataTable = anychart.data.table(0, 0, 2);
-        dataTable.addData(channels[channelNum]);
-        plot.line(dataTable.mapAs({ value: 1 })).name(channelNames[channelNum]);
-    })
+    var channelCount = graphData.length - 1;
+        plot.line(dataTable.mapAs({ value: 1 })).name(channelNames[0]);
 
     plot.legend().position('bottom');
     plot.legend().itemsLayout("horizontal-expandable");
