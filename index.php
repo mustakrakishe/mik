@@ -17,7 +17,7 @@
     }*/
 
     $data = getChannelData1($path, $channels);
-    echo count($data[0]);
+    print_r ($data[0]);
 ?>
 
 <?php require 'php/common/foot.php'; ?>

@@ -14,13 +14,13 @@ $(document).ready(function () {
     buildGraph(channelData, channelNames);
     var time = new Date() - timeB;
     alert ('Время операции: ' + time + ' мс');*/
-    
-    
+
+
     var timeB = new Date();
     var channelData1 = getChannelData1(activeChannels, date);
     buildGraph1(channelData1, channelNames);
     var time = new Date() - timeB;
-    alert ('Время операции: ' + time + ' мс');
+    alert('Время операции: ' + time + ' мс');
 
     $('form').submit(function (event) {
         event.preventDefault();
@@ -44,13 +44,13 @@ $(document).ready(function () {
         activeDisplay = $('[name=display] option:selected').val();
         activeChannels = displays[activeDisplay].channels;
         selectChannels(activeChannels);
-        
-    var timeB = new Date();
+
+        var timeB = new Date();
         channelData = getChannelData1(activeChannels, date);
         channelNames = getChannelNames(channels, activeChannels);
         buildGraph1(channelData, channelNames);
-    var time = new Date() - timeB;
-    alert ('Время операции: ' + time + ' мс');
+        var time = new Date() - timeB;
+        alert('Время операции: ' + time + ' мс');
     });
 
     $('[name=channels]').change(function (event) {
@@ -201,9 +201,9 @@ function buildGraph(graphData, channelNames) {
         unitType: 'day',
         unitCount: 1
     });
-    
+
     chart.xScale('scatter');
-    
+
     plot.removeAllSeries();
 
     graphData.forEach(function (channel, channelNum, channels) {
@@ -223,15 +223,16 @@ function buildGraph1(graphData, channelNames) {
     var chart = anychart.stock();
     chart.container('chart');
     var plot = chart.plot();
-    
+
     plot.removeAllSeries();
-    
+
     var dataTable = anychart.data.table(0, 0, 2);
     dataTable.addData(graphData);
 
-    var channelCount = graphData.length - 1;
-        plot.line(dataTable.mapAs({ value: 1 })).name(channelNames[0]);
-
+    var channelCount = 8;
+    for (var channelNum = 0; channelNum < channelCount; channelNum++) {
+        plot.line(dataTable.mapAs({ value: channelNum+1 })).name(channelNames[channelNum]);
+    }
     plot.legend().position('bottom');
     plot.legend().itemsLayout("horizontal-expandable");
 
