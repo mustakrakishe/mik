@@ -10,7 +10,6 @@ $(document).ready(function () {
     var channelNames = getChannelNames(channels, activeChannels);
     var channelData = getChannelData(activeChannels, date);
     buildGraph(channelData, channelNames);
-    var time = new Date() - timeB;
 
     $('form').submit(function (event) {
         event.preventDefault();
