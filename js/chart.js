@@ -33,7 +33,7 @@ $(document).ready(function () {
         activeDisplay = $('[name=display] option:selected').val();
         activeChannels = displays[activeDisplay].channels;
         selectChannels(activeChannels);
-        channelData = getChannelData1(activeChannels, date);
+        channelData = getChannelData(activeChannels, date);
         channelNames = getChannelNames(channels, activeChannels);
         buildGraph(channelData, channelNames);
     });
@@ -109,34 +109,6 @@ function getChannelData(channels, date) {
 
     $.ajax({
         url: "../php/chart/getChannelData.php",
-        data: {
-            channels: channels,
-            date: date
-        },
-        type: "GET",
-        dataType: "json",
-        async: false
-    })
-        .done(function (response) {
-            channelData = response;
-        })
-        .fail(function (xhr, status, errorThrown) {
-            alert(
-                'Ошибка запроса данных каналов.\n' +
-                "Error: " + errorThrown + '\n' +
-                "Status: " + status + '\n' +
-                xhr
-            )
-        })
-
-    return channelData;
-}
-
-function getChannelData1(channels, date) {
-    var channelData = false;
-
-    $.ajax({
-        url: "../php/chart/getChannelData1.php",
         data: {
             channels: channels,
             date: date
