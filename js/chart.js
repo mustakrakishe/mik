@@ -145,19 +145,30 @@ function buildGraph(graphData, channelNames) {
     $('#chart').empty();
     var chart = anychart.stock();
     chart.container('chart');
-    var plot = chart.plot();
+    chart.scroller(false);
 
+    var plot = chart.plot();
+    plot.legend().position('bottom');
+    plot.legend().itemsLayout("horizontal-expandable");
+    plot.crosshair().yStroke(null);
     plot.removeAllSeries();
+
 
     var dataTable = anychart.data.table(0, 0, 2);
     dataTable.addData(graphData);
 
     var channelCount = 8;
     for (var channelNum = 0; channelNum < channelCount; channelNum++) {
-        plot.line(dataTable.mapAs({ value: channelNum+1 })).name(channelNames[channelNum]);
+        plot.line(dataTable.mapAs({ value: channelNum + 1 })).name(channelNames[channelNum]);
     }
-    plot.legend().position('bottom');
-    plot.legend().itemsLayout("horizontal-expandable");
 
+
+    var interactivity = chart.interactivity();
+    interactivity.zoomOnMouseWheel(true);
+
+    chart.plot(0).xAxis().minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}');
+    chart.plot(0).xAxis().labels(false);
+    
+    chart.xScale().ticks();;
     chart.draw();
 }
