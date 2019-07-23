@@ -152,6 +152,7 @@ function buildGraph(graphData, channelNames) {
     plot.legend().itemsLayout("horizontal-expandable");
     plot.crosshair().yStroke(null);
     plot.removeAllSeries();
+    plot.legend().title(false);
 
 
     var dataTable = anychart.data.table(0, 0, 2);

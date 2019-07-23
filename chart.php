@@ -8,13 +8,13 @@
 <script src='js/anychart/anychart-exports.min.js'></script>
 <script src='js/anychart/anychart-base.min.js'></script>
 
-<h1>График</h1>
-
-<form action="" method="post">
-    <input type="date" name="date" value="2018-05-11">
-    <select name="display"></select>
-    <input type="submit" name="build_btn" hidden="hidden">
-</form>
+<div id="controlRow">
+    <form action="" method="post">
+        <input type="date" name="date" value="2018-05-11">
+        <select name="display"></select>
+        <input type="submit" name="build_btn" hidden="hidden">
+    </form>
+</div>
 
 <div id="chartRow">
     <div id="chart"></div>

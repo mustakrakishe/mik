@@ -1,20 +1,35 @@
-input[name=date]{
+#controlRow{
+    height: 24px;
     margin-bottom: 10px;
 }
 
+form{
+    display: inline;
+}
+
+#saveChart{
+    height: 100%;
+    width: 75px;
+    float: right;
+}
+
+select[name=display]{
+    height: 100%;
+}
+
 #chartRow{
-    height: calc(100% - 37px - 24px - 10px);
+    height: calc(100% - 37px);
 }
 
 #chart{
     height: 100%;
     width: calc(100% - 300px - 10px);
     margin-right: 10px;
-    background-color: aqua;
     float: left;
 }
 
 select[name=channels]{
     height: 100%;
     width: 300px;
+    padding: 4px;
 }
