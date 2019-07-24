@@ -150,10 +150,11 @@ function buildGraph(graphData, channelNames) {
     var plot = chart.plot();
     plot.legend().position('bottom');
     plot.legend().itemsLayout("horizontal-expandable");
+    plot.legend().title(false);
+    chart.crosshair().xLabel(false);
+    chart.crosshair().yLabel(false);
     plot.crosshair().yStroke(null);
     plot.removeAllSeries();
-    plot.legend().title(false);
-
 
     var dataTable = anychart.data.table(0, 0, 2);
     dataTable.addData(graphData);
