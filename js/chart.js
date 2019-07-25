@@ -154,6 +154,8 @@ function buildGraph(graphData, channelNames) {
     chart.crosshair().xLabel(false);
     chart.crosshair().yLabel(false);
     plot.crosshair().yStroke(null);
+    plot.xMinorGrid(true);
+    plot.yMinorGrid(true);
     plot.removeAllSeries();
 
     var dataTable = anychart.data.table(0, 0, 2);
