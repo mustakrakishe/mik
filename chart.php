@@ -18,7 +18,10 @@
 
 <div id="chartRow">
     <div id="chart"></div>
-    <select multiple name="channels"></select>
+    <div id="tab-channels">
+        <div id="tab-channels-tongue"></div>
+        <select multiple name="channels"></select>
+    </div>
 </div>
 
 <?php require 'php/common/foot.php'; ?>

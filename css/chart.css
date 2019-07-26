@@ -19,12 +19,33 @@ select[name=display]{
 
 #chartRow{
     height: calc(100% - 37px);
+    overflow: hidden;
 }
 
 #chart{
     height: 100%;
-    width: calc(100% - 300px - 10px);
+    width: 100%;
+    /*width: calc(100% - 300px - 10px - 25px);*/
+    /*width: calc(100% - 300px - 10px);*/
     margin-right: 10px;
+    float: left;
+}
+
+#tab-channels{
+    width: 325px; 
+    height: inherit;
+
+    position: fixed;
+    right: -300px;
+}
+
+#tab-channels-tongue{
+    width: 0; 
+    height: 100px;
+    border-top: 5px solid transparent;
+    border-right: 25px solid #959FB0;
+    border-bottom: 5px solid transparent;
+
     float: left;
 }
 
@@ -32,4 +53,6 @@ select[name=channels]{
     height: 100%;
     width: 300px;
     padding: 4px;
+
+    float: left;
 }

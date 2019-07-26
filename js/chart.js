@@ -44,6 +44,20 @@ $(document).ready(function () {
         channelNames = getChannelNames(channels, activeChannels);
         buildGraph(channelData, channelNames);
     });
+
+    $('#tab-channels-tongue').click(function(){
+        if($('#tab-channels').css('right') == "-300px"){
+            $('#tab-channels').animate({
+                right: '0'
+            }, 300);
+        }
+        
+        else if($('#tab-channels').css('right') == "0px"){
+            $('#tab-channels').animate({
+                right: '-300px'
+            }, 300);
+        }
+    });
 });
 
 function getChannels(date) {
