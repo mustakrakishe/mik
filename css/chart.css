@@ -20,11 +20,13 @@ select[name=display]{
 #chartRow{
     height: calc(100% - 37px);
     overflow: hidden;
+
+    position: relative;
 }
 
 #chart{
     height: 100%;
-    width: 100%;
+    width: calc(100% - 10px);
     /*width: calc(100% - 300px - 10px - 25px);*/
     /*width: calc(100% - 300px - 10px);*/
     margin-right: 10px;
@@ -32,10 +34,12 @@ select[name=display]{
 }
 
 #tab-channels{
-    width: 325px; 
-    height: inherit;
+    width: 325px;
+    height: 100%;
 
-    position: fixed;
+    /*float: right;*/
+    position: absolute;
+    top: 0;
     right: -300px;
 }
 
@@ -49,7 +53,7 @@ select[name=display]{
     float: left;
 }
 
-select[name=channels]{
+#tab-channels-list{
     height: 100%;
     width: 300px;
     padding: 4px;

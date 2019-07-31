@@ -20,7 +20,7 @@
     <div id="chart"></div>
     <div id="tab-channels">
         <div id="tab-channels-tongue"></div>
-        <select multiple name="channels"></select>
+        <select id="tab-channels-list" multiple id="tab-channels-list" name="channels"></select>
     </div>
 </div>
 

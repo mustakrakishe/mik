@@ -24,7 +24,8 @@ body{
 #header,
 #content{
     min-width: 820px;
-    padding: 10px;
+    padding: 10px 25px;
+    /*Заменить паддинг на марджинг для тог чтоб селект каналов был такой же высоты, как и график.*/
 }
 
 #header{
