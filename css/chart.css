@@ -1,62 +1,54 @@
-#controlRow{
+.content-wrap{
+    background-color: rgb(100, 100, 100);
+    height: calc(100% - 10px);
+
+    float: left;
+    padding: 5px;
+}
+
+.content-header{
     height: 24px;
-    margin-bottom: 10px;
+    padding: 0 5px 5px 5px;
+}
+
+.content{
+    width: calc(100% - 10px);
+    height: calc(100% - 29px - 10px);
+    padding: 5px;
+
+    background-color: rgb(75, 75, 75);
+}
+
+#mainContent-wrap{
+    width: calc(100% - 300px - 10px - 10px);
 }
 
 form{
     display: inline;
 }
 
-#saveChart{
-    height: 100%;
-    width: 75px;
-    float: right;
-}
-
-select[name=display]{
-    height: 100%;
-}
-
-#chartRow{
-    height: calc(100% - 37px);
-    overflow: hidden;
-
-    position: relative;
+select#display{
+    height: 24px;
 }
 
 #chart{
     height: 100%;
-    width: calc(100% - 10px);
-    /*width: calc(100% - 300px - 10px - 25px);*/
-    /*width: calc(100% - 300px - 10px);*/
-    margin-right: 10px;
-    float: left;
+    width: 100%;
 }
 
-#tab-channels{
-    width: 325px;
-    height: 100%;
+.tab{
+    width: 299px;
+    margin-left: 1px;
 
-    /*float: right;*/
-    position: absolute;
-    top: 0;
-    right: -300px;
-}
-
-#tab-channels-tongue{
-    width: 0; 
-    height: 100px;
-    border-top: 5px solid transparent;
-    border-right: 25px solid #959FB0;
-    border-bottom: 5px solid transparent;
-
-    float: left;
+    background-color: rgb(100, 100, 100);
 }
 
 #tab-channels-list{
-    height: 100%;
-    width: 300px;
-    padding: 4px;
+    border: none;
+    height: calc(100% - 29px);
+    width: 100%;
+}
 
-    float: left;
+.icon-close-window{
+    float: right;
 }
