@@ -45,18 +45,14 @@ $(document).ready(function () {
         buildGraph(channelData, channelNames);
     });
 
-    $('#tab-channels-tongue').click(function(){
-        if($('#tab-channels').css('right') == "-300px"){
-            $('#tab-channels').animate({
-                right: '0'
-            }, 300);
-        }
-        
-        else if($('#tab-channels').css('right') == "0px"){
-            $('#tab-channels').animate({
-                right: '-300px'
-            }, 300);
-        }
+    $('.tab > .icon-close-window').click(function(){
+        $(this).parent().css('display', 'none');
+        $('#mainContent-wrap').css('width', 'calc(100% - 10px - 25px)');
+    });
+
+    $('#shortcut-channels').click(function(){
+        $('#tab-channels').css('display', 'block');
+        $('#mainContent-wrap').css('width', 'calc(100% - 300px - 10px - 10px - 25px)');
     });
 });
 

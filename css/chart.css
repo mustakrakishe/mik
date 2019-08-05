@@ -20,7 +20,7 @@
 }
 
 #mainContent-wrap{
-    width: calc(100% - 300px - 10px - 10px);
+    width: calc(100% - 10px - 25px);
 }
 
 form{
@@ -37,6 +37,8 @@ select#display{
 }
 
 .tab{
+    display: none;
+
     width: 299px;
     margin-left: 1px;
 
@@ -49,6 +51,39 @@ select#display{
     width: 100%;
 }
 
+.tab > .content-header{
+    float: left;
+}
+
 .icon-close-window{
     float: right;
+}
+
+#side-bar{
+    width: 25px;
+    height: 100%;
+    float: left;
+}
+
+.shortcut{
+    width: inherit;
+    padding: 5px 0;
+    display:  table;
+
+    writing-mode: vertical-rl;
+}
+
+.shortcut > p{
+    display: table-cell;
+    vertical-align: middle;
+
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+}
+
+.shortcut:hover{
+    background-color: rgb(100, 100, 100);
 }

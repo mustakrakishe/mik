@@ -24,8 +24,13 @@
 </div>
 
 <div id="tab-channels" class="content-wrap tab">
-    <div id="tab-channels-header" class="content-header">Каналы <i class="fa fa-times icon-close-window" aria-hidden="true"></i></div>
+    <div id="tab-channels-header" class="content-header">Каналы</div>
+    <i class="fa fa-times icon-close-window" aria-hidden="true"></i>
     <select id="tab-channels-list" class="content" multiple id="tab-channels-list" name="channels"></select>
+</div>
+
+<div id="side-bar">
+    <div id="shortcut-channels" class="shortcut"><p>Каналы</p></div>
 </div>
 
 <?php require 'php/common/foot.php'; ?>
