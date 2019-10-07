@@ -52,7 +52,7 @@ $(document).ready(function () {
             $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');
         }
         else{
-            $('#shortcut-channels').css('background-color', 'transparent');
+            $('#shortcut-channels').css('background-color', '');
             $('#tab-channels').css('display', 'none');
             $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
         }
@@ -169,6 +169,8 @@ function buildGraph(graphData, channelNames) {
     plot.crosshair().yStroke(null);
     plot.xMinorGrid(true);
     plot.yMinorGrid(true);
+    chart.margin(-5, -25, -25, -25);
+
     plot.removeAllSeries();
 
     var dataTable = anychart.data.table(0, 0, 2);

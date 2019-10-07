@@ -12,8 +12,10 @@
     ?>
 
     <div id="header">
-        <a href="index.php">Главная</a>
-        <a href="chart.php">График</a>
+        <div id="navigation">
+            <a href="index.php">Главная</a>
+            <a href="chart.php">График</a>
+        </div>
     </div>
 
     <div id="content">
