@@ -45,14 +45,17 @@ $(document).ready(function () {
         buildGraph(channelData, channelNames);
     });
 
-    $('.tab > .icon-close-window').click(function(){
-        $(this).parent().css('display', 'none');
-        $('#mainContent-wrap').css('width', 'calc(100% - 10px - 25px)');
-    });
-
     $('#shortcut-channels').click(function(){
-        $('#tab-channels').css('display', 'block');
-        $('#mainContent-wrap').css('width', 'calc(100% - 300px - 10px - 10px - 25px)');
+        if($('#tab-channels').css('display') == 'none'){
+            $('#shortcut-channels').css('background-color', 'rgb(77, 77, 77)');
+            $('#tab-channels').css('display', 'block');
+            $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');
+        }
+        else{
+            $('#shortcut-channels').css('background-color', 'transparent');
+            $('#tab-channels').css('display', 'none');
+            $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
+        }
     });
 });
 

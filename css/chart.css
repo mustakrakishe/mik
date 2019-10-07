@@ -1,26 +1,27 @@
 .content-wrap{
-    background-color: rgb(100, 100, 100);
-    height: calc(100% - 10px);
-
+    height: 100%;
     float: left;
-    padding: 5px;
 }
 
-.content-header{
+#controlRow,
+.tab-header{
     height: 24px;
-    padding: 0 5px 5px 5px;
 }
 
-.content{
-    width: calc(100% - 10px);
-    height: calc(100% - 29px - 10px);
-    padding: 5px;
+#tab-channels-header > p{
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
 
-    background-color: rgb(75, 75, 75);
+#controlRow{
+    width: 100%;
+    background-color: white;
 }
 
 #mainContent-wrap{
-    width: calc(100% - 10px - 25px);
+    width: calc(100% - 25px - 5px);
+    padding-left: 5px;
 }
 
 form{
@@ -32,26 +33,34 @@ select#display{
 }
 
 #chart{
-    height: 100%;
-    width: 100%;
+    height: calc(100% - 24px);
 }
 
 .tab{
     display: none;
+    width: 295px;
+    margin-left: 5px;
 
-    width: 299px;
-    margin-left: 1px;
+    background-color: rgb(77, 77, 77);
+}
 
-    background-color: rgb(100, 100, 100);
+option{
+    padding-left: 5px;
 }
 
 #tab-channels-list{
-    border: none;
-    height: calc(100% - 29px);
+    height: 100%;
     width: 100%;
+    border: none;
+
+    background-color: inherit;
 }
 
-.tab > .content-header{
+#tab-channels-list:focus{
+    border: none;
+}
+
+.tab-header > p{
     float: left;
 }
 
@@ -63,6 +72,7 @@ select#display{
     width: 25px;
     height: 100%;
     float: left;
+    background-color: rgb(87, 87, 87);
 }
 
 .shortcut{

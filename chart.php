@@ -10,23 +10,22 @@
 <script src='js/anychart/anychart-base.min.js'></script>
 
 <div id="mainContent-wrap" class="content-wrap">
-    <div id="controlRow" class="content-header">
+    <div id="controlRow">
         <form action="" method="post">
             <input type="date" name="date" value="2018-05-11">
             <select id="display" name="display"></select>
             <input type="submit" name="build_btn" hidden="hidden">
         </form>
     </div>
-
-    <div id="chartRow" class="content">
-        <div id="chart"></div>
+        
+    <div id="chart">
+        
     </div>
 </div>
 
+
 <div id="tab-channels" class="content-wrap tab">
-    <div id="tab-channels-header" class="content-header">Каналы</div>
-    <i class="fa fa-times icon-close-window" aria-hidden="true"></i>
-    <select id="tab-channels-list" class="content" multiple id="tab-channels-list" name="channels"></select>
+    <select id="tab-channels-list" multiple id="tab-channels-list" name="channels"></select>
 </div>
 
 <div id="side-bar">
