@@ -1,7 +1,6 @@
 <?php require 'php/common/head.php'; ?>
 <link rel="stylesheet" href="css/chart.css">
-<link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
-<script src='js/jquery-3.3.1.min.js'></script>
+<script src='js/jquery-3.4.1.min.js'></script>
 <script src='js/chart.js'></script>
 
 <script src='js/anychart/anychart-core.min.js'></script>
