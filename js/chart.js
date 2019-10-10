@@ -1,24 +1,23 @@
 $(document).ready(function () {
-    //create chart space
+    //create chart
     var chart = anychart.stock();
     var plot = chart.plot();
 
     chart.container('chart');
     chart.scroller(false);
     chart.interactivity().zoomOnMouseWheel(true);
+    chart.crosshair().xLabel(false);
+    chart.crosshair().yLabel(false);
+    chart.margin(-5, -25, -25, -25);
 
     plot.legend().position('bottom');
     plot.legend().itemsLayout("horizontal-expandable");
     plot.legend().title(false);
-    chart.crosshair().xLabel(false);
-    chart.crosshair().yLabel(false);
     plot.crosshair().yStroke(null);
     plot.xMinorGrid(true);
     plot.yMinorGrid(true);
-    chart.margin(-5, -25, -25, -25);
-
-    chart.plot(0).xAxis().minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}');
-    chart.plot(0).xAxis().labels(false);
+    plot.xAxis().minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}');
+    plot.xAxis().labels(false);
 
     chart.draw();
     //
@@ -33,6 +32,7 @@ $(document).ready(function () {
     selectChannels(activeChannels);
     var channelNames = getChannelNames(channels, activeChannels);
     var channelData = getChannelData(activeChannels, date);
+    console.log('channel data: ' + channelData);
     addSeries(plot, channelData, channelNames);
 
     $('form').submit(function (event) {
@@ -65,21 +65,30 @@ $(document).ready(function () {
     $('[name=channels]').change(function (event) {
         var activeChannels_old = activeChannels;
         activeChannels = $('[name=channels]').val();
+        console.log('activeChannels_old: ' + activeChannels_old);
+        console.log('activeChannels: ' + activeChannels);
 
-        if(activeChannels.length > activeChannels_old.length){
-            console.log('Новый канал!');
-            channelToAdd = activeChannels.filter(function(element){
-                return !(activeChannels_old.includes(element));
-            })
-            channelData = getChannelData(channelToAdd, date);
-            channelName = getChannelNames(channels, channelToAdd);
+        channelsToAdd = activeChannels.filter(function(element){
+            return !(activeChannels_old.includes(element));
+        })
+        
+        channelsToDelete = activeChannels_old.filter(function(element){
+            return !(activeChannels.includes(element));
+        })
+
+        if(channelsToDelete.length){
+            plot.removeSeriesAt(5);
+
+            //0,20,51,30,32,29,27,65
+        }
+        
+        if(channelsToAdd.length){
+            channelData = getChannelData(channelsToAdd, date);
+            channelName = getChannelNames(channels, channelsToAdd);
             addSeries(plot, channelData, channelName);
         }
-        else{
-            channelToDelete = activeChannels_old.filter(function(element){
-                return !(activeChannels.includes(element));
-            })
-        }
+
+        
     });
 
     $('#shortcut-channels').click(function(){
