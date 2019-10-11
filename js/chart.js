@@ -32,8 +32,7 @@ $(document).ready(function () {
     selectChannels(activeChannels);
     var channelNames = getChannelNames(channels, activeChannels);
     var channelData = getChannelData(activeChannels, date);
-    console.log('channel data: ' + channelData);
-    addSeries(plot, channelData, channelNames);
+    addSeries(plot, channelData, activeChannels, channelNames);
 
     $('form').submit(function (event) {
         event.preventDefault();
@@ -65,27 +64,29 @@ $(document).ready(function () {
     $('[name=channels]').change(function (event) {
         var activeChannels_old = activeChannels;
         activeChannels = $('[name=channels]').val();
-        console.log('activeChannels_old: ' + activeChannels_old);
-        console.log('activeChannels: ' + activeChannels);
 
         channelsToAdd = activeChannels.filter(function(element){
             return !(activeChannels_old.includes(element));
         })
         
         channelsToDelete = activeChannels_old.filter(function(element){
-            return !(activeChannels.includes(element));
+            if(!(activeChannels.includes(element))){
+                return activeChannels_old.includes(element);
+            }
         })
 
         if(channelsToDelete.length){
-            plot.removeSeriesAt(5);
-
-            //0,20,51,30,32,29,27,65
+            console.log('Каналы на удаление: ' + channelsToDelete);
+            channelsToDelete.forEach(function (channelNum){
+                console.log('Удаляю канал с id = ' + channelNum);
+                plot.removeSeries(channelNum);
+            });
         }
         
         if(channelsToAdd.length){
             channelData = getChannelData(channelsToAdd, date);
             channelName = getChannelNames(channels, channelsToAdd);
-            addSeries(plot, channelData, channelName);
+            addSeries(plot, channelData, channelsToAdd, channelName);
         }
 
         
@@ -237,12 +238,12 @@ function buildGraph(chart, graphData, channelNames) {
     chart.draw();
 }
 
-function addSeries(chart, data, names) {
+function addSeries(chart, data, id, names) {
     var dataTable = anychart.data.table(0, 0, 2);
     dataTable.addData(data);
 
     var channelCount = data[0].length - 1;
     for (var channelNum = 0; channelNum < channelCount; channelNum++) {
-        chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]);
+        chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]);
     }
 }
