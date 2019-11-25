@@ -154,13 +154,13 @@ function setDisplayList(displays) {
     displays.forEach(function (display, i, displays) {
         $('[name=display]').append($('<option value="' + i + '">' + display.name + '</option>'));
     })
-}
+};
 
 function selectChannels(channels) {
     channels.forEach(function (channel, i, channels) {
         $('[name=channels] :nth-child(' + (parseInt(channel) + 1) + ')').attr("selected", "selected");
     })
-}
+};
 
 function getChannelData(channels, date) {
     var channelData = false;
@@ -199,54 +199,6 @@ function getChannelNames(channels, activeChannels) {
     return channelNames;
 }
 
-function buildGraph(chart, graphData, channelNames) {
-    $('#chart').empty();
-    
-    chart.container('chart');
-    chart.scroller(false);
-
-    var plot = chart.plot();
-    plot.legend().position('bottom');
-    plot.legend().itemsLayout("horizontal-expandable");
-    plot.legend().title(false);
-    chart.crosshair().xLabel(false);
-    chart.crosshair().yLabel(false);
-    plot.crosshair().yStroke(null);
-    plot.xMinorGrid(true);
-    plot.yMinorGrid(true);
-    chart.margin(-5, -25, -25, -25);
-
-    plot.removeAllSeries();
-//
-    var dataTable = anychart.data.table(0, 0, 2);
-    dataTable.addData(graphData);
-
-    var channelCount = 8;
-    for (var channelNum = 0; channelNum < channelCount; channelNum++) {
-        plot.line(dataTable.mapAs({ value: channelNum + 1 })).name(channelNames[channelNum]);
-    }
-//
-
-    var interactivity = chart.interactivity();
-    interactivity.zoomOnMouseWheel(true);
-
-    chart.plot(0).xAxis().minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}');
-    chart.plot(0).xAxis().labels(false);
-    
-    chart.draw();
-}
-
-function addSeries(chart, data, id, names) {
-    var dataTable = anychart.data.table(0, 0, 2);
-    dataTable.addData(data);
-
-    var channelCount = data[0].length - 1;
-    for (var channelNum = 0; channelNum < channelCount; channelNum++) {
-        chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]);
-    }
-}
-
-//instead of the addSeries function
 function updatePlot(plot, channelsToAdd, channelsToDelete, date, channels){
     if(channelsToDelete.length){
         
@@ -259,5 +211,14 @@ function updatePlot(plot, channelsToAdd, channelsToDelete, date, channels){
         channelData = getChannelData(channelsToAdd, date);
         channelName = getChannelNames(channels, channelsToAdd);
         addSeries(plot, channelData, channelsToAdd, channelName);
+    }
+
+    function addSeries(chart, data, id, names) {
+        var dataTable = anychart.data.table(0, 0, 2);
+        dataTable.addData(data);
+    
+        id.forEach(function(value, channelNum){
+            chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]);
+        });
     }
 }
