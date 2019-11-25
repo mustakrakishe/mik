@@ -73,19 +73,7 @@ $(document).ready(function () {
             }
         })
 
-        if(channelsToDelete.length){
-            console.log('Каналы на удаление: ' + channelsToDelete);
-            channelsToDelete.forEach(function (channelNum){
-                console.log('Удаляю канал с id = ' + channelNum);
-                plot.removeSeries(channelNum);
-            });
-        }
-        
-        if(channelsToAdd.length){
-            channelData = getChannelData(channelsToAdd, date);
-            channelName = getChannelNames(channels, channelsToAdd);
-            addSeries(plot, channelData, channelsToAdd, channelName);
-        }
+        updatePlot(plot, channelsToAdd, channelsToDelete, date, channels);
 
         
     });
