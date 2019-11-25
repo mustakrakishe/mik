@@ -30,9 +30,7 @@ $(document).ready(function () {
     var activeDisplay = $('[name=display] option:selected').val();
     var activeChannels = displays[activeDisplay].channels;
     selectChannels(activeChannels);
-    var channelNames = getChannelNames(channels, activeChannels);
-    var channelData = getChannelData(activeChannels, date);
-    addSeries(plot, channelData, activeChannels, channelNames);
+    updatePlot(plot, activeChannels, [], date, channels);
 
     $('form').submit(function (event) {
         event.preventDefault();
@@ -58,7 +56,7 @@ $(document).ready(function () {
         selectChannels(activeChannels);
         channelData = getChannelData(activeChannels, date);
         channelNames = getChannelNames(channels, activeChannels);
-        buildGraph(channelData, channelNames);
+        addSeries(plot, channelData, activeChannels, channelNames);
     });
 
     $('[name=channels]').change(function (event) {
@@ -245,5 +243,21 @@ function addSeries(chart, data, id, names) {
     var channelCount = data[0].length - 1;
     for (var channelNum = 0; channelNum < channelCount; channelNum++) {
         chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]);
+    }
+}
+
+//instead of the addSeries function
+function updatePlot(plot, channelsToAdd, channelsToDelete, date, channels){
+    if(channelsToDelete.length){
+        
+        channelsToDelete.forEach(function (channelNum){
+            plot.removeSeries(channelNum);
+        });
+    }
+    
+    if(channelsToAdd.length){
+        channelData = getChannelData(channelsToAdd, date);
+        channelName = getChannelNames(channels, channelsToAdd);
+        addSeries(plot, channelData, channelsToAdd, channelName);
     }
 }
