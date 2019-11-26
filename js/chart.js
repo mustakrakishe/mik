@@ -28,9 +28,10 @@ $(document).ready(function () {
     var displays = getDisplays(date);
     setDisplayList(displays);
     var activeDisplay = $('[name=display] option:selected').val();
+    var activeChannels_old = [];
     var activeChannels = displays[activeDisplay].channels;
     selectChannels(activeChannels);
-    updatePlot(plot, [], activeChannels, date, channels);
+    updatePlot(plot, activeChannels_old, activeChannels, date, channels);
 
 
     $('form').submit(function (event) {
@@ -53,19 +54,15 @@ $(document).ready(function () {
     $('[name=display]').change(function (event) {
         $('[name=channels] option:selected').removeAttr('selected');
         activeDisplay = $('[name=display] option:selected').val();
+        activeChannels_old = activeChannels;
         activeChannels = displays[activeDisplay].channels;
         selectChannels(activeChannels);
-        channelData = getChannelData(activeChannels, date);
-        channelNames = getChannelNames(channels, activeChannels);
-        updatePlot(plot, activeChannels, [], date, channels);
+        updatePlot(plot, activeChannels_old, activeChannels, date, channels);
     });
 
     $('[name=channels]').change(function (event) {
-        var activeChannels_old = activeChannels;
+        activeChannels_old = activeChannels;
         activeChannels = $('[name=channels]').val();
-        console.log('activeChannels_old: ' + activeChannels_old);
-        console.log('activeChannels: ' + activeChannels);
-
         updatePlot(plot, activeChannels_old, activeChannels, date, channels);
     });
 
