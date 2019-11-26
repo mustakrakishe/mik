@@ -44,10 +44,15 @@ $(document).ready(function () {
                 displays = getDisplays(date);
                 setDisplayList(displays);
             }
-            channelData = getChannelData(activeChannels, newDate);
-            channelNames = getChannelNames(channels, activeChannels);
-            buildGraph(channelData, channelNames);
             date = newDate;
+            
+            activeChannels_old = activeChannels;
+            activeChannels = [];
+            updatePlot(plot, activeChannels_old, activeChannels, date, channels);
+            
+            activeChannels = activeChannels_old;
+            activeChannels_old = [];
+            updatePlot(plot, activeChannels_old, activeChannels, date, channels);
         }
     });
 
