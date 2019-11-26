@@ -30,7 +30,8 @@ $(document).ready(function () {
     var activeDisplay = $('[name=display] option:selected').val();
     var activeChannels = displays[activeDisplay].channels;
     selectChannels(activeChannels);
-    updatePlot(plot, activeChannels, [], date, channels);
+    updatePlot(plot, [], activeChannels, date, channels);
+
 
     $('form').submit(function (event) {
         event.preventDefault();
@@ -56,26 +57,16 @@ $(document).ready(function () {
         selectChannels(activeChannels);
         channelData = getChannelData(activeChannels, date);
         channelNames = getChannelNames(channels, activeChannels);
-        addSeries(plot, channelData, activeChannels, channelNames);
+        updatePlot(plot, activeChannels, [], date, channels);
     });
 
     $('[name=channels]').change(function (event) {
         var activeChannels_old = activeChannels;
         activeChannels = $('[name=channels]').val();
+        console.log('activeChannels_old: ' + activeChannels_old);
+        console.log('activeChannels: ' + activeChannels);
 
-        channelsToAdd = activeChannels.filter(function(element){
-            return !(activeChannels_old.includes(element));
-        })
-        
-        channelsToDelete = activeChannels_old.filter(function(element){
-            if(!(activeChannels.includes(element))){
-                return activeChannels_old.includes(element);
-            }
-        })
-
-        updatePlot(plot, channelsToAdd, channelsToDelete, date, channels);
-
-        
+        updatePlot(plot, activeChannels_old, activeChannels, date, channels);
     });
 
     $('#shortcut-channels').click(function(){
@@ -187,7 +178,18 @@ function getChannelNames(channels, activeChannels) {
     return channelNames;
 }
 
-function updatePlot(plot, channelsToAdd, channelsToDelete, date, channels){
+function updatePlot(plot, activeChannels_old, activeChannels, date, channels){
+    channelsToAdd = activeChannels.filter(function(element){
+        return !(activeChannels_old.includes(element));
+    });
+    
+    channelsToDelete = activeChannels_old.filter(function(element){
+        if(!(activeChannels.includes(element))){
+            return activeChannels_old.includes(element);
+        }
+    });
+    
+
     if(channelsToDelete.length){
         
         channelsToDelete.forEach(function (channelNum){
