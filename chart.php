@@ -3,10 +3,19 @@
 <script src='js/jquery-3.4.1.min.js'></script>
 <script src='js/chart.js'></script>
 
+<script src='js/anychart/ru-ru.js'></script>
 <script src='js/anychart/anychart-core.min.js'></script>
 <script src='js/anychart/anychart-stock.min.js'></script>
 <script src='js/anychart/anychart-exports.min.js'></script>
 <script src='js/anychart/anychart-base.min.js'></script>
+<script src='js/anychart/anychart-ui.min.js'></script>
+
+<link rel="stylesheet" href="css/anychart/anychart-ui.min.css">
+
+<script>
+anychart.format.inputLocale('ru-ru');
+anychart.format.outputLocale('ru-ru');
+</script>
 
 <div id="mainContent-wrap" class="content-wrap">
     <div id="controlRow">

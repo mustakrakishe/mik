@@ -8,7 +8,17 @@ $(document).ready(function () {
     chart.interactivity().zoomOnMouseWheel(true);
     chart.crosshair().xLabel(false);
     chart.crosshair().yLabel(false);
-    chart.margin(-5, -25, -25, -25);
+    chart.margin(-5, -25, -25, -15);
+
+    chart.contextMenu().itemsFormatter(function(items){
+       delete items["save-data-as"];
+       delete items["share-with"];
+       delete items["exporting-separator"];
+       delete items["full-screen-enter"];
+       delete items["full-screen-separator"];
+       delete items["about"];
+       return items;
+    });
 
     plot.legend().position('bottom');
     plot.legend().itemsLayout("horizontal-expandable");
@@ -33,7 +43,6 @@ $(document).ready(function () {
     selectChannels(activeChannels);
     updatePlot(plot, activeChannels_old, activeChannels, date, channels);
 
-
     $('form').submit(function (event) {
         event.preventDefault();
         var newDate = $('[name=date]').val();
@@ -45,7 +54,7 @@ $(document).ready(function () {
                 setDisplayList(displays);
             }
             date = newDate;
-            
+
             activeChannels_old = activeChannels;
             activeChannels = [];
             updatePlot(plot, activeChannels_old, activeChannels, date, channels);
