@@ -20,6 +20,7 @@ $(document).ready(function () {
        return items;
     });
 
+    plot.legend().fontColor('Black');
     plot.legend().position('bottom');
     plot.legend().itemsLayout("horizontal-expandable");
     plot.legend().title(false);
@@ -27,7 +28,10 @@ $(document).ready(function () {
     plot.xMinorGrid(true);
     plot.yMinorGrid(true);
     plot.xAxis().minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}');
+    plot.xAxis().minorLabels().fontColor('Black');
     plot.xAxis().labels(false);
+    plot.yAxis().labels().fontColor('Black');
+    plot.yAxis('Black');
 
     chart.draw();
     //
@@ -43,8 +47,13 @@ $(document).ready(function () {
     selectChannels(activeChannels);
     updatePlot(plot, activeChannels_old, activeChannels, date, channels);
 
-    $('form').submit(function (event) {
+    //Возможность выхода из фокуса поля "date" по Enter-у
+    $('form').submit(function(event) {
         event.preventDefault();
+        $('[name=date]').blur();
+    });
+
+    $('[name=date]').blur(function(){
         var newDate = $('[name=date]').val();
         if (date != newDate) {
             if (date.substring(0, 4) != newDate.substring(0, 4)) {
@@ -65,7 +74,7 @@ $(document).ready(function () {
         }
     });
 
-    $('[name=display]').change(function (event) {
+    $('[name=display]').change(function() {
         $('[name=channels] option:selected').removeAttr('selected');
         activeDisplay = $('[name=display] option:selected').val();
         activeChannels_old = activeChannels;
@@ -74,7 +83,7 @@ $(document).ready(function () {
         updatePlot(plot, activeChannels_old, activeChannels, date, channels);
     });
 
-    $('[name=channels]').change(function (event) {
+    $('[name=channels]').change(function() {
         activeChannels_old = activeChannels;
         activeChannels = $('[name=channels]').val();
         updatePlot(plot, activeChannels_old, activeChannels, date, channels);
