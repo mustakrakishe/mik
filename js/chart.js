@@ -1,4 +1,8 @@
 $(document).ready(function () {
+    anychart.exports.server("http://localhost:2000");
+    anychart.format.inputLocale('ru-ru');
+    anychart.format.outputLocale('ru-ru');
+
     //create chart
     var chart = anychart.stock();
     var plot = chart.plot();
@@ -28,13 +32,14 @@ $(document).ready(function () {
     plot.xMinorGrid(true);
     plot.yMinorGrid(true);
     plot.xAxis().minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}');
-    plot.xAxis().minorLabels().fontColor('Black');
+    plot.xAxis().minorLabels().fontColor('black');
     plot.xAxis().labels(false);
-    plot.yAxis().labels().fontColor('Black');
-    plot.yAxis('Black');
+    plot.yAxis().labels().fontColor('black');
+    plot.yAxis().ticks(false);
+    plot.yAxis().stroke('black');
+    plot.lineMarker().value(0).stroke("black");
 
     chart.draw();
-    //
 
     var date = $('[name=date]').val();
     var channels = getChannels(date);
@@ -51,6 +56,10 @@ $(document).ready(function () {
     $('form').submit(function(event) {
         event.preventDefault();
         $('[name=date]').blur();
+    });
+
+    chart.listen('click', function() {
+        $('input:focus').blur();
     });
 
     $('[name=date]').blur(function(){
