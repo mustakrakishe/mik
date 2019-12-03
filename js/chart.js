@@ -37,7 +37,8 @@ $(document).ready(function () {
     plot.yAxis().labels().fontColor('black');
     plot.yAxis().ticks(false);
     plot.yAxis().stroke('black');
-    plot.lineMarker().value(0).stroke("black");
+    plot.xAxis().background().enabled(true).stroke('none').fill('none');
+    plot.xAxis().background().topStroke('1 black');
 
     chart.draw();
 
