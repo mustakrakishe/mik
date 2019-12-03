@@ -13,8 +13,8 @@
 
     <div id="header">
         <div id="navigation">
-            <a href="index.php">Главная</a>
-            <a href="chart.php">График</a>
+            <a class='light_font' href="index.php">Главная</a>
+            <a class='light_font' href="chart.php">График</a>
         </div>
     </div>
 

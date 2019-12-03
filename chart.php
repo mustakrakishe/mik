@@ -37,7 +37,7 @@
 </div>
 
 <div id="side-bar">
-    <div id="shortcut-channels" class="shortcut"><p>Каналы</p></div>
+    <div id='shortcut-channels' class='shortcut'><p>Каналы</p></div>
 </div>
 
 <?php require 'php/common/foot.php'; ?>
