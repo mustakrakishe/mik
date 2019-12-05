@@ -58,7 +58,8 @@ $(document).ready(function () {
     // show preloader
     preloader.visible(true);
 
-        updatePlot(plot, activeChannels_old, activeChannels, date, channels, preloader);
+    updatePlot(plot, activeChannels_old, activeChannels, date, channels, preloader)
+        .then(() => preloader.visible(false));
 
     //Возможность выхода из фокуса поля "date" по Enter-у
     $('form').submit(function(event) {
@@ -220,36 +221,40 @@ function getChannelNames(channels, activeChannels) {
     return channelNames;
 }
 
-function updatePlot(plot, activeChannels_old, activeChannels, date, channels, preloader){
-    channelsToAdd = activeChannels.filter(function(element){
-        return !(activeChannels_old.includes(element));
-    });
+function updatePlot(plot, activeChannels_old, activeChannels, date, channels){
     
-    channelsToDelete = activeChannels_old.filter(function(element){
-        if(!(activeChannels.includes(element))){
-            return activeChannels_old.includes(element);
-        }
-    });
-    
-
-    if(channelsToDelete.length){
-        
-        channelsToDelete.forEach(function (channelNum){
-            plot.removeSeries(channelNum);
+    return new Promise(function(resolve, reject) {
+        channelsToAdd = activeChannels.filter(function(element){
+            return !(activeChannels_old.includes(element));
         });
-    }
+        
+        channelsToDelete = activeChannels_old.filter(function(element){
+            if(!(activeChannels.includes(element))){
+                return activeChannels_old.includes(element);
+            }
+        });
+        
+
+        if(channelsToDelete.length){
+            
+            channelsToDelete.forEach(function (channelNum){
+                plot.removeSeries(channelNum);
+            });
+        }
+        
+        if(channelsToAdd.length){
+
+            channelName = getChannelNames(channels, channelsToAdd);
+
+            getChannelData(channelsToAdd, date)
+                .then(channelData => {
+                    addSeries(plot, channelData, channelsToAdd, channelName);
+                })
+        };
+
+        resolve();
+    })
     
-    if(channelsToAdd.length){
-
-        channelName = getChannelNames(channels, channelsToAdd);
-
-        getChannelData(channelsToAdd, date)
-            .then(channelData => {
-                addSeries(plot, channelData, channelsToAdd, channelName);
-                preloader.visible(false);
-            })
-    };
-
     function addSeries(chart, data, id, names) {
         var dataTable = anychart.data.table(0, 0, 2);
         dataTable.addData(data);
