@@ -58,7 +58,7 @@ $(document).ready(function () {
     // show preloader
     preloader.visible(true);
 
-    updatePlot(plot, activeChannels_old, activeChannels, date, channels, preloader)
+    updatePlot(plot, activeChannels_old, activeChannels, date, channels)
         .then(() => preloader.visible(false));
 
     //Возможность выхода из фокуса поля "date" по Enter-у
@@ -182,33 +182,26 @@ function selectChannels(channels) {
 };
 
 function getChannelData(channels, date) {
-
-    return new Promise(function(resolve, reject) {
-
-        $.ajax({
-            url: "../php/chart/getChannelData.php",
-            data: {
-                channels: channels,
-                date: date
-            },
-            type: "GET",
-            dataType: "json"
-        })
-        .done(function (response) {
-            resolve(response);
-        })
-        .fail(function (xhr, status, errorThrown) {
-            alert(
-                'Ошибка запроса данных каналов.\n' +
-                "Error: " + errorThrown + '\n' +
-                "Status: " + status + '\n' +
-                xhr
-            );
-            reject('Ошибка запроса данных каналов.\n' +
+    $.ajax({
+        url: "../php/chart/getChannelData.php",
+        data: {
+            channels: channels,
+            date: date
+        },
+        type: "GET",
+        dataType: "json",
+        async: false
+    })
+    .done(function (response) {
+        return response;
+    })
+    .fail(function (xhr, status, errorThrown) {
+        alert(
+            'Ошибка запроса данных каналов.\n' +
             "Error: " + errorThrown + '\n' +
             "Status: " + status + '\n' +
-            xhr);
-        });
+            xhr
+        );
     });
 }
 
@@ -244,12 +237,9 @@ function updatePlot(plot, activeChannels_old, activeChannels, date, channels){
         
         if(channelsToAdd.length){
 
-            channelName = getChannelNames(channels, channelsToAdd);
-
-            getChannelData(channelsToAdd, date)
-                .then(channelData => {
-                    addSeries(plot, channelData, channelsToAdd, channelName);
-                })
+            var channelName = getChannelNames(channels, channelsToAdd);
+            var channelData = getChannelData(channelsToAdd, date);
+            addSeries(plot, channelData, channelsToAdd, channelName);
         };
 
         resolve();
