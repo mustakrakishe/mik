@@ -51,7 +51,14 @@ $(document).ready(function () {
     var activeChannels_old = [];
     var activeChannels = displays[activeDisplay].channels;
     selectChannels(activeChannels);
-    updatePlot(plot, activeChannels_old, activeChannels, date, channels);
+    
+    preloader = anychart.ui.preloader();
+    // cover only chart container
+    preloader.render(document.getElementById("chart"));
+    // show preloader
+    preloader.visible(true);
+
+        updatePlot(plot, activeChannels_old, activeChannels, date, channels);
 
     //Возможность выхода из фокуса поля "date" по Enter-у
     $('form').submit(function(event) {
@@ -104,11 +111,13 @@ $(document).ready(function () {
             $('#shortcut-channels').css('background-color', 'rgb(77, 77, 77)');
             $('#tab-channels').css('display', 'block');
             $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');
+            $('.anychart-loader').css('width', 'calc(100% - 300px - 25px - 5px)');
         }
         else{
             $('#shortcut-channels').css('background-color', '');
             $('#tab-channels').css('display', 'none');
             $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
+            $('.anychart-loader').css('width', 'calc(100% - 25px - 5px)');
         }
     });
 });
@@ -171,7 +180,7 @@ function selectChannels(channels) {
     })
 };
 
-function getChannelData(channels, date) {
+function getChannelData(channels, date, plot, channelsToAdd, channelName) {
     var channelData = false;
 
     $.ajax({
@@ -181,11 +190,12 @@ function getChannelData(channels, date) {
             date: date
         },
         type: "GET",
-        dataType: "json",
-        async: false
+        dataType: "json"
     })
         .done(function (response) {
             channelData = response;
+            addSeries(plot, channelData, channelsToAdd, channelName);
+            preloader.visible(false);
         })
         .fail(function (xhr, status, errorThrown) {
             alert(
@@ -197,6 +207,17 @@ function getChannelData(channels, date) {
         })
 
     return channelData;
+    //
+    function addSeries(chart, data, id, names) {
+        console.log('Зашёл в addSeries()');
+        var dataTable = anychart.data.table(0, 0, 2);
+        dataTable.addData(data);
+    
+        id.forEach(function(value, channelNum){
+            chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]);
+        });
+    }
+    //
 }
 
 function getChannelNames(channels, activeChannels) {
@@ -208,7 +229,7 @@ function getChannelNames(channels, activeChannels) {
     return channelNames;
 }
 
-function updatePlot(plot, activeChannels_old, activeChannels, date, channels){
+function updatePlot(plot, activeChannels_old, activeChannels, date, channels, preloader){
     channelsToAdd = activeChannels.filter(function(element){
         return !(activeChannels_old.includes(element));
     });
@@ -228,12 +249,14 @@ function updatePlot(plot, activeChannels_old, activeChannels, date, channels){
     }
     
     if(channelsToAdd.length){
-        channelData = getChannelData(channelsToAdd, date);
+
         channelName = getChannelNames(channels, channelsToAdd);
-        addSeries(plot, channelData, channelsToAdd, channelName);
-    }
+        channelData = getChannelData(channelsToAdd, date, plot, channelsToAdd, channelName, preloader);
+        //addSeries(plot, channelData, channelsToAdd, channelName);
+    };
 
     function addSeries(chart, data, id, names) {
+        console.log('Зашёл в addSeries()');
         var dataTable = anychart.data.table(0, 0, 2);
         dataTable.addData(data);
     

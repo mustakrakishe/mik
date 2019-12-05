@@ -1,6 +1,8 @@
 <?php require 'php/common/head.php'; ?>
-<link rel="stylesheet" href="css/chart.css">
+
 <script src='js/libraries/jquery-3.4.1.min.js'></script>
+<link rel="stylesheet" href="css/anychart/anychart-ui.min.css">
+<link rel="stylesheet" href="css/chart.css">
 <script src='js/chart.js'></script>
 
 <script src='js/libraries/anychart/ru-ru.js'></script>
@@ -10,7 +12,6 @@
 <script src='js/libraries/anychart/anychart-base.min.js'></script>
 <script src='js/libraries/anychart/anychart-ui.min.js'></script>
 
-<link rel="stylesheet" href="css/anychart/anychart-ui.min.css">
 
 <script>
     anychart.format.inputLocale('ru-ru');
