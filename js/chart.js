@@ -58,7 +58,7 @@ $(document).ready(function () {
     // show preloader
     preloader.visible(true);
 
-        updatePlot(plot, activeChannels_old, activeChannels, date, channels);
+        updatePlot(plot, activeChannels_old, activeChannels, date, channels, preloader);
 
     //Возможность выхода из фокуса поля "date" по Enter-у
     $('form').submit(function(event) {
@@ -180,22 +180,21 @@ function selectChannels(channels) {
     })
 };
 
-function getChannelData(channels, date, plot, channelsToAdd, channelName) {
-    var channelData = false;
+function getChannelData(channels, date) {
 
-    $.ajax({
-        url: "../php/chart/getChannelData.php",
-        data: {
-            channels: channels,
-            date: date
-        },
-        type: "GET",
-        dataType: "json"
-    })
+    return new Promise(function(resolve, reject) {
+
+        $.ajax({
+            url: "../php/chart/getChannelData.php",
+            data: {
+                channels: channels,
+                date: date
+            },
+            type: "GET",
+            dataType: "json"
+        })
         .done(function (response) {
-            channelData = response;
-            addSeries(plot, channelData, channelsToAdd, channelName);
-            preloader.visible(false);
+            resolve(response);
         })
         .fail(function (xhr, status, errorThrown) {
             alert(
@@ -203,21 +202,13 @@ function getChannelData(channels, date, plot, channelsToAdd, channelName) {
                 "Error: " + errorThrown + '\n' +
                 "Status: " + status + '\n' +
                 xhr
-            )
-        })
-
-    return channelData;
-    //
-    function addSeries(chart, data, id, names) {
-        console.log('Зашёл в addSeries()');
-        var dataTable = anychart.data.table(0, 0, 2);
-        dataTable.addData(data);
-    
-        id.forEach(function(value, channelNum){
-            chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]);
+            );
+            reject('Ошибка запроса данных каналов.\n' +
+            "Error: " + errorThrown + '\n' +
+            "Status: " + status + '\n' +
+            xhr);
         });
-    }
-    //
+    });
 }
 
 function getChannelNames(channels, activeChannels) {
@@ -251,12 +242,15 @@ function updatePlot(plot, activeChannels_old, activeChannels, date, channels, pr
     if(channelsToAdd.length){
 
         channelName = getChannelNames(channels, channelsToAdd);
-        channelData = getChannelData(channelsToAdd, date, plot, channelsToAdd, channelName, preloader);
-        //addSeries(plot, channelData, channelsToAdd, channelName);
+
+        getChannelData(channelsToAdd, date)
+            .then(channelData => {
+                addSeries(plot, channelData, channelsToAdd, channelName);
+                preloader.visible(false);
+            })
     };
 
     function addSeries(chart, data, id, names) {
-        console.log('Зашёл в addSeries()');
         var dataTable = anychart.data.table(0, 0, 2);
         dataTable.addData(data);
     
