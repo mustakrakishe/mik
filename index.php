@@ -4,18 +4,8 @@
 <h1>Главная</h1>
 
 <?php
-    //header('location: chart.php');
+    header('location: chart.php');
 ?>
-
-<script>
-    let promise = new Promise(function(resolve, reject) {
-        resolve("done!");
-    });
-
-    // resolve запустит первую функцию, переданную в .then
-    promise.then(result => {alert(result)});
-
-</script>
 
 
 

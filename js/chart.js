@@ -24,21 +24,13 @@ $(document).ready(function () {
        return items;
     });
 
-    plot.legend().fontColor('Black');
-    plot.legend().position('bottom');
-    plot.legend().itemsLayout("horizontal-expandable");
-    plot.legend().title(false);
+    plot.legend().fontColor('Black').position('bottom').itemsLayout("horizontal-expandable").title(false);
     plot.crosshair().yStroke(null);
     plot.xMinorGrid(true);
     plot.yMinorGrid(true);
-    plot.xAxis().minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}');
-    plot.xAxis().minorLabels().fontColor('black');
-    plot.xAxis().labels(false);
-    plot.yAxis().labels().fontColor('black');
-    plot.yAxis().ticks(false);
-    plot.yAxis().stroke('black');
-    plot.xAxis().background().enabled(true).stroke('none').fill('none');
-    plot.xAxis().background().topStroke('1 black');
+    plot.xAxis().labels(false).minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}').fontColor('black');
+    plot.yAxis().ticks(false).stroke('black').labels().fontColor('black');
+    plot.xAxis().background().enabled(true).stroke('none').fill('none').topStroke('1 black');
 
     chart.draw();
 
