@@ -3,7 +3,9 @@
 <script src='js/libraries/jquery-3.4.1.min.js'></script>
 <link rel="stylesheet" href="css/anychart/anychart-ui.min.css">
 <link rel="stylesheet" href="css/chart.css">
-<script src='js/chart.js'></script>
+
+<script src='js/chart/functions.js'></script>
+<script src='js/chart/main.js'></script>
 
 <script src='js/libraries/anychart/ru-ru.js'></script>
 <script src='js/libraries/anychart/anychart-core.min.js'></script>
