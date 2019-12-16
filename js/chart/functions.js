@@ -57,9 +57,9 @@ function selectChannels(channels) {
 };
 
 function getChannelData(channels, date) {
+    console.log('getChannelData() starts...');
 
-    return new Promise(function(resolve, reject) {
-
+    return new Promise(resolve => {
         $.ajax({
             url: "../php/chart/getChannelData.php",
             data: {
@@ -70,6 +70,7 @@ function getChannelData(channels, date) {
             dataType: "json"
         })
         .done(function (response) {
+            console.log('getChannelData() is done!');
             resolve(response);
         })
         .fail(function (xhr, status, errorThrown) {
@@ -79,12 +80,10 @@ function getChannelData(channels, date) {
                 "Status: " + status + '\n' +
                 xhr
             );
-            reject('Ошибка запроса данных каналов.\n' +
-            "Error: " + errorThrown + '\n' +
-            "Status: " + status + '\n' +
-            xhr);
         });
-    });
+    })
+
+    
 }
 
 function getChannelNames(channels, activeChannels) {
@@ -96,48 +95,42 @@ function getChannelNames(channels, activeChannels) {
     return channelNames;
 }
 
-function updatePlot(plot, activeChannels_old, activeChannels, date, channels){
-    return new Promise(function(resolve, reject) {
+async function updatePlot(plot, activeChannels_old, activeChannels, date, channels){
 
-        channelsToAdd = activeChannels.filter(function(element){
-            return !(activeChannels_old.includes(element));
+    channelsToAdd = activeChannels.filter(function(element){
+        return !(activeChannels_old.includes(element));
+    });
+    
+    channelsToDelete = activeChannels_old.filter(function(element){
+        if(!(activeChannels.includes(element))){
+            return activeChannels_old.includes(element);
+        }
+    });
+    
+
+    if(channelsToDelete.length){
+        
+        channelsToDelete.forEach(function (channelNum){
+            plot.removeSeries(channelNum);
         });
-        
-        channelsToDelete = activeChannels_old.filter(function(element){
-            if(!(activeChannels.includes(element))){
-                return activeChannels_old.includes(element);
-            }
-        });
-        
+    }
+    
+    if(channelsToAdd.length){
 
-        if(channelsToDelete.length){
-            
-            channelsToDelete.forEach(function (channelNum){
-                plot.removeSeries(channelNum);
-            });
-        }
-        
-        if(channelsToAdd.length){
+        channelName = getChannelNames(channels, channelsToAdd);
 
-            channelName = getChannelNames(channels, channelsToAdd);
-
-            getChannelData(channelsToAdd, date)
-                .then(channelData => {
-                    addSeries(plot, channelData, channelsToAdd, channelName);
-                    resolve ();
-                })
-        }
-        else{
-            resolve ();
-        }
-    })
+        var channelData = await getChannelData(channelsToAdd, date);
+        addSeries(plot, channelData, channelsToAdd, channelName);
+    }
 }
 
 function addSeries(chart, data, id, names) {
+    console.log('addSeries() starts...');
     var dataTable = anychart.data.table(0, 0, 2);
     dataTable.addData(data);
 
     id.forEach(function(value, channelNum){
         chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]);
-    });
+    })
+    console.log('addSeries() is done!');
 }
