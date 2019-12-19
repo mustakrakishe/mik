@@ -97,6 +97,9 @@ function getChannelNames(channels, activeChannels) {
 
 async function updatePlot(plot, activeChannels_old, activeChannels, date, channels){
 
+    console.log('activeChannels_old: ' + activeChannels_old + '\n' +
+        'activeChannels: ' + activeChannels + '\n' + '\n');
+
     channelsToAdd = activeChannels.filter(function(element){
         return !(activeChannels_old.includes(element));
     });
@@ -120,17 +123,21 @@ async function updatePlot(plot, activeChannels_old, activeChannels, date, channe
         channelName = getChannelNames(channels, channelsToAdd);
 
         var channelData = await getChannelData(channelsToAdd, date);
-        addSeries(plot, channelData, channelsToAdd, channelName);
+        await addSeries(plot, channelData, channelsToAdd, channelName);
     }
 }
 
-function addSeries(chart, data, id, names) {
+async function addSeries(chart, data, id, names) {
     console.log('addSeries() starts...');
     var dataTable = anychart.data.table(0, 0, 2);
     dataTable.addData(data);
 
-    id.forEach(function(value, channelNum){
-        chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]);
-    })
+    id.reduce(function(value_pre, value, channelNum){
+        return value_pre
+            .then(() => chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]));
+        
+    }, Promise.resolve());
     console.log('addSeries() is done!');
 }
+
+//chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]);

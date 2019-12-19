@@ -56,8 +56,12 @@ $(document).ready(function () {
     preloader.render(document.getElementById("chart"));
     
     preloader.visible(true);
+    $("select").prop("disabled", true);
     updatePlot(plot, activeChannels_old, activeChannels, date, channels)
-        .then(() => preloader.visible(false));
+        .then(() => {
+            $("select").prop("disabled", false);
+            preloader.visible(false);
+        })
 
     //Возможность выхода из фокуса поля "date" по Enter-у
     $('form').submit(function(event) {
