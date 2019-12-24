@@ -101,7 +101,7 @@ $(document).ready(function () {
     });
 
     $('[name=display]').change(function() {
-        $('[name=channels] option:selected').removeAttr('selected');
+        $('[name=channels] option:selected').prop('selected', '');
         activeDisplay = $('[name=display] option:selected').val();
         activeChannels_old = activeChannels;
         activeChannels = displays[activeDisplay].channels;

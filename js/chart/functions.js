@@ -52,7 +52,7 @@ function setDisplayList(displays) {
 
 function selectChannels(channels) {
     channels.forEach(function (channel, i, channels) {
-        $('[name=channels] :nth-child(' + (parseInt(channel) + 1) + ')').attr("selected", "selected");
+        $('[name=channels] :nth-child(' + (parseInt(channel) + 1) + ')').prop("selected", "selected");
     })
 };
 
