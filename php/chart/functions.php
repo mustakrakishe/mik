@@ -1,4 +1,11 @@
 <?php
+    function getTechZones($path){
+        if (file_exists($path)){
+        }
+        else{
+        }
+    }
+    
     function getChannels($path){
         $channels = [];
 

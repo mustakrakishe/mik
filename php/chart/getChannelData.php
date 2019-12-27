@@ -7,5 +7,4 @@
 
     ini_set('memory_limit', '1000M');
     echo json_encode(getChannelData($path, $channels));
-    //echo json_encode('yeap!');
 ?>

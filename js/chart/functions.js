@@ -19,14 +19,17 @@ function getChannels(date) {
 }
 
 function setChannelList(channels) {
-    channels.forEach(function (channel, i, channels) {
-        $('[name=channels]').append($('<option value="' + i + '">' + channel.name + '</option>'));
-    })
+    if(channels){
+        channels.forEach(function (channel, i, channels) {
+            $('[name=channels]').append($('<option value="' + i + '">' + channel.name + '</option>'));
+        })
+    }
+    else{
+        console.log('Невозможно заполнить список каналов. Массив каналов не получен.');
+    }
 }
 
 function getDisplays(date) {
-    var displays = false;
-
     $.ajax({
         url: "../php/chart/getDisplays.php",
         data: { date: date },
@@ -35,13 +38,12 @@ function getDisplays(date) {
         async: false
     })
         .done(function (response) {
-            displays = response;
+            return response;
         })
         .fail(function () {
-            alert("Ошибка запроса информации о дислеях.");
+            console.log("Ошибка запроса информации о дислеях.");
+            return false;
         })
-
-    return displays;
 }
 
 function setDisplayList(displays) {
@@ -57,8 +59,6 @@ function selectChannels(channels) {
 };
 
 function getChannelData(channels, date) {
-    console.log('getChannelData() starts...');
-
     return new Promise(resolve => {
         $.ajax({
             url: "../php/chart/getChannelData.php",
@@ -70,7 +70,6 @@ function getChannelData(channels, date) {
             dataType: "json"
         })
         .done(function (response) {
-            console.log('getChannelData() is done!');
             resolve(response);
         })
         .fail(function (xhr, status, errorThrown) {
@@ -96,10 +95,6 @@ function getChannelNames(channels, activeChannels) {
 }
 
 async function updatePlot(plot, activeChannels_old, activeChannels, date, channels){
-
-    console.log('activeChannels_old: ' + activeChannels_old + '\n' +
-        'activeChannels: ' + activeChannels + '\n' + '\n');
-
     channelsToAdd = activeChannels.filter(function(element){
         return !(activeChannels_old.includes(element));
     });
@@ -128,7 +123,6 @@ async function updatePlot(plot, activeChannels_old, activeChannels, date, channe
 }
 
 async function addSeries(chart, data, id, names) {
-    console.log('addSeries() starts...');
     var dataTable = anychart.data.table(0, 0, 2);
     dataTable.addData(data);
 
@@ -137,7 +131,6 @@ async function addSeries(chart, data, id, names) {
             .then(() => chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]));
         
     }, Promise.resolve());
-    console.log('addSeries() is done!');
 }
 
 //chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]);

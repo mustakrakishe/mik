@@ -35,11 +35,13 @@
 </div>
 
 
+<div id="tab-techZones" class="content-wrap tab"></div>
 <div id="tab-channels" class="content-wrap tab">
     <select id="tab-channels-list" multiple id="tab-channels-list" name="channels"></select>
 </div>
 
 <div id="side-bar">
+    <div id='shortcut-techZones' class='shortcut'><p>Тех. зоны</p></div>
     <div id='shortcut-channels' class='shortcut'><p>Каналы</p></div>
 </div>
 

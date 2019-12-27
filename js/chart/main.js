@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     anychart.exports.server("http://localhost:2000");
     anychart.format.inputLocale('ru-ru');
     anychart.format.outputLocale('ru-ru');
@@ -42,7 +43,7 @@ $(document).ready(function () {
 
     chart.draw();
 
-    var date = $('[name=date]').val();
+    /*var date = $('[name=date]').val();
     var channels = getChannels(date);
     setChannelList(channels);
     var displays = getDisplays(date);
@@ -61,7 +62,7 @@ $(document).ready(function () {
         .then(() => {
             $("select").prop("disabled", false);
             preloader.visible(false);
-        })
+        })*/
 
     //Возможность выхода из фокуса поля "date" по Enter-у
     $('form').submit(function(event) {
@@ -121,8 +122,29 @@ $(document).ready(function () {
             .then(() => preloader.visible(false));
     });
 
+    $('#shortcut-techZones').click(function(){
+        if($('#tab-techZones').css('display') == 'none'){
+            $('.tab').css('display', 'none');
+            $('.shortcut').css('background-color', '');
+
+            $('#shortcut-techZones').css('background-color', 'rgb(77, 77, 77)');
+            $('#tab-techZones').css('display', 'block');
+            $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');
+            $('.anychart-loader').css('width', 'calc(100% - 300px - 25px - 5px)');
+        }
+        else{
+            $('#shortcut-techZones').css('background-color', '');
+            $('#tab-techZones').css('display', 'none');
+            $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
+            $('.anychart-loader').css('width', 'calc(100% - 25px - 5px)');
+        }
+    });
+
     $('#shortcut-channels').click(function(){
         if($('#tab-channels').css('display') == 'none'){
+            $('.tab').css('display', 'none');
+            $('.shortcut').css('background-color', '');
+
             $('#shortcut-channels').css('background-color', 'rgb(77, 77, 77)');
             $('#tab-channels').css('display', 'block');
             $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');

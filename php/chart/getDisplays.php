@@ -4,5 +4,10 @@
     $path = $_SERVER['DOCUMENT_ROOT'] . '/data/' . $dateArr[0] . '/display.dat';
     require 'functions.php';
 
-    echo json_encode(getDisplays($path));
+    if(file_exist($path)){
+        echo json_encode(getDisplays($path));
+    }
+    else{
+        echo ('Ошибка загрузки списка дисплеев. Отсутствует файл ' . $path . '.');
+    }
 ?>
