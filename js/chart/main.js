@@ -43,6 +43,9 @@ $(document).ready(function () {
 
     chart.draw();
 
+    preloader = anychart.ui.preloader();
+    preloader.render(document.getElementById("chart"));
+
     $('input[name=techZone]:first').prop('checked', true);
     var techZone = $('input[name=techZone]').val();
     var date = $('[name=date]').val();
@@ -50,18 +53,16 @@ $(document).ready(function () {
     var workDir = getWorkDir(techZone, date);
 
     if(typeof workDir == 'string'){
-        /*var channelbas_path =  workDir + '/chanel.bas';
-        var channels = getChannels(channelbas_path);
+        var channelBas_path =  workDir + '/chanel.bas';
+        var displayDat_path =  workDir + '/display.dat';
+        var channels = getChannels(channelBas_path);
         setChannelList(channels);
-        var displays = getDisplays(date);
+        var displays = getDisplays(displayDat_path);
         setDisplayList(displays);
         var activeDisplay = $('[name=display] option:selected').val();
         var activeChannels_old = [];
         var activeChannels = displays[activeDisplay].channels;
         selectChannels(activeChannels);
-        
-        preloader = anychart.ui.preloader();
-        preloader.render(document.getElementById("chart"));
         
         preloader.visible(true);
         $("select").prop("disabled", true);
@@ -69,7 +70,7 @@ $(document).ready(function () {
             .then(() => {
                 $("select").prop("disabled", false);
                 preloader.visible(false);
-            })*/
+            })
 
         //Возможность выхода из фокуса поля "date" по Enter-у
         $('form').submit(function(event) {

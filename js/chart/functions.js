@@ -22,12 +22,12 @@ function getWorkDir(techZone, date){
     return workDir;
 }
 
-function getChannels(date) {
+function getChannels(path) {
     var channels = false;
 
     $.ajax({
         url: "../php/chart/getChannels.php",
-        data: { date: date },
+        data: { path: path },
         type: "GET",
         dataType: "json",
         async: false
@@ -53,21 +53,25 @@ function setChannelList(channels) {
     }
 }
 
-function getDisplays(date) {
+function getDisplays(path) {
+    var displays = [];
+
     $.ajax({
         url: "../php/chart/getDisplays.php",
-        data: { date: date },
+        data: { path: path },
         type: "GET",
         dataType: "json",
         async: false
     })
-        .done(function (response) {
-            return response;
-        })
-        .fail(function () {
-            console.log("Ошибка запроса информации о дислеях.");
-            return false;
-        })
+    .done(function (response) {
+        displays = response;
+    })
+    .fail(function () {
+        console.log("Ошибка запроса информации о дислеях.");
+        displays = false;
+    })
+
+    return displays;
 }
 
 function setDisplayList(displays) {
@@ -82,13 +86,13 @@ function selectChannels(channels) {
     })
 };
 
-function getChannelData(channels, date) {
+function getChannelData(channels, path) {
     return new Promise(resolve => {
         $.ajax({
             url: "../php/chart/getChannelData.php",
             data: {
                 channels: channels,
-                date: date
+                path: path
             },
             type: "GET",
             dataType: "json"
