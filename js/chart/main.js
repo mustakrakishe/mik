@@ -66,7 +66,9 @@ $(document).ready(function () {
         
         preloader.visible(true);
         $("select").prop("disabled", true);
-        updatePlot(plot, activeChannels_old, activeChannels, date, channels)
+        var dateArr = date.split('-');
+        var dataArh_path = workDir + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
+        updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
             .then(() => {
                 $("select").prop("disabled", false);
                 preloader.visible(false);
@@ -149,13 +151,13 @@ $(document).ready(function () {
             $('#shortcut-techZones').css('background-color', 'rgb(77, 77, 77)');
             $('#tab-techZones').css('display', 'block');
             $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');
-            $('.anychart-loader').css('width', 'calc(100% - 300px - 25px - 5px)');
+            //$('.anychart-loader').css('width', 'calc(100% - 300px - 25px - 5px)');
         }
         else{
             $('#shortcut-techZones').css('background-color', '');
             $('#tab-techZones').css('display', 'none');
             $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
-            $('.anychart-loader').css('width', 'calc(100% - 25px - 5px)');
+            //$('.anychart-loader').css('width', 'calc(100% - 25px - 5px)');
         }
     });
 
