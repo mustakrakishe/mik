@@ -29,13 +29,30 @@
         </form>
     </div>
         
-    <div id="chart">
-        
-    </div>
+    <div id="chart"></div>
 </div>
 
+<?php
+    $path = "./data/";
+    $techZones = [];
 
-<div id="tab-techZones" class="content-wrap tab"></div>
+    if($handle = opendir($path)){
+        while($entry = readdir($handle)){
+            if(($entry != '.') && ($entry != '..')){
+                array_push($techZones, $entry);
+            }
+        }
+        closedir($handle);
+    }
+?>
+
+<div id="tab-techZones" class="content-wrap tab">
+    <?php
+        foreach($techZones as $techZoneName){
+            echo '<label><input type="radio" name="techZone" value="' . $techZoneName . '">' . $techZoneName . '</label>';
+        }
+    ?>
+</div>
 <div id="tab-channels" class="content-wrap tab">
     <select id="tab-channels-list" multiple id="tab-channels-list" name="channels"></select>
 </div>
@@ -44,5 +61,7 @@
     <div id='shortcut-techZones' class='shortcut'><p>Тех. зоны</p></div>
     <div id='shortcut-channels' class='shortcut'><p>Каналы</p></div>
 </div>
+
+
 
 <?php require 'php/common/foot.php'; ?>

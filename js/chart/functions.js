@@ -1,3 +1,27 @@
+function getWorkDir(techZone, date){
+    var workDir = false;
+    $.ajax({
+        url: "../php/chart/getWorkDir.php",
+        data: {
+            techZone: techZone,
+            date: date
+        },
+        type: "GET",
+        dataType: "json",
+        async: false
+    })
+    .done(function (response) {
+        workDir = response;
+    })
+    .fail(function () {
+        workDir =
+            'Ошибка запроса доступа к рабочей директории.' + '\n' +
+            'Запрашиваемая тех. зона: ' + techZone + '\n' +
+            'Запрашиваемая дата: ' + date;
+    })
+    return workDir;
+}
+
 function getChannels(date) {
     var channels = false;
 
@@ -133,4 +157,6 @@ async function addSeries(chart, data, id, names) {
     }, Promise.resolve());
 }
 
-//chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]);
+function showErrMessage(container, errText){
+    container.append('<div class="errMessage"><p>' + errText + '</p></div>');
+}

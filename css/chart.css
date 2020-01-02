@@ -15,6 +15,8 @@
 }
 
 #mainContent-wrap{
+    position: relative;
+
     width: calc(100% - 25px - 5px);
     margin-left: 5px;
     background-color: white;
@@ -47,8 +49,10 @@ select#display{
 
 .tab{
     display: none;
-    width: 295px;
+    width: 285px;
+    height: calc(100% - 5px);
     margin-left: 5px;
+    padding: 5px 5px 0 5px;
 
     background-color: rgb(77, 77, 77);
 }
@@ -60,7 +64,11 @@ option{
     padding-left: 5px;
 }
 
-#tab-channels-list{
+.tab > *{
+    display: block;
+}
+
+.tab-channels-list{
     height: 100%;
     width: 100%;
     border: none;
@@ -108,4 +116,23 @@ option{
 
 .shortcut:hover{
     background-color: rgb(100, 100, 100);
+}
+
+.errMessage{
+    width: 460px;
+    height: 260px;
+    padding: 20px;
+    background-color: rgba(255, 0, 0, 0.3);
+    color: rgb(255, 255, 255);
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.errMessage > p{
+    font-size: 24px;
 }

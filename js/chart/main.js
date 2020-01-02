@@ -43,84 +43,102 @@ $(document).ready(function () {
 
     chart.draw();
 
-    /*var date = $('[name=date]').val();
-    var channels = getChannels(date);
-    setChannelList(channels);
-    var displays = getDisplays(date);
-    setDisplayList(displays);
-    var activeDisplay = $('[name=display] option:selected').val();
-    var activeChannels_old = [];
-    var activeChannels = displays[activeDisplay].channels;
-    selectChannels(activeChannels);
-    
-    preloader = anychart.ui.preloader();
-    preloader.render(document.getElementById("chart"));
-    
-    preloader.visible(true);
-    $("select").prop("disabled", true);
-    updatePlot(plot, activeChannels_old, activeChannels, date, channels)
-        .then(() => {
-            $("select").prop("disabled", false);
-            preloader.visible(false);
-        })*/
+    $('input[name=techZone]:first').prop('checked', true);
+    var techZone = $('input[name=techZone]').val();
+    var date = $('[name=date]').val();
 
-    //Возможность выхода из фокуса поля "date" по Enter-у
-    $('form').submit(function(event) {
-        event.preventDefault();
-        $('[name=date]').blur();
-    });
+    var workDir = getWorkDir(techZone, date);
 
-    chart.listen('click', function() {
-        $('input:focus').blur();
-    });
-
-    $('[name=date]').blur(function(){
-        var newDate = $('[name=date]').val();
-        if (date != newDate) {
-            if (date.substring(0, 4) != newDate.substring(0, 4)) {
-                channels = getChannels(newDate);
-                setChannelList(channels);
-                displays = getDisplays(date);
-                setDisplayList(displays);
-            }
-            date = newDate;
-
-            activeChannels_old = activeChannels;
-            activeChannels = [];
-
-            preloader.visible(true);
-            updatePlot(plot, activeChannels_old, activeChannels, date, channels)
-                .then(() => preloader.visible(false));
-            
-            activeChannels = activeChannels_old;
-            activeChannels_old = [];
-
-            preloader.visible(true);
-            updatePlot(plot, activeChannels_old, activeChannels, date, channels)
-                .then(() => preloader.visible(false));
-        }
-    });
-
-    $('[name=display]').change(function() {
-        $('[name=channels] option:selected').prop('selected', '');
-        activeDisplay = $('[name=display] option:selected').val();
-        activeChannels_old = activeChannels;
-        activeChannels = displays[activeDisplay].channels;
+    if(typeof workDir == 'string'){
+        /*var channelbas_path =  workDir + '/chanel.bas';
+        var channels = getChannels(channelbas_path);
+        setChannelList(channels);
+        var displays = getDisplays(date);
+        setDisplayList(displays);
+        var activeDisplay = $('[name=display] option:selected').val();
+        var activeChannels_old = [];
+        var activeChannels = displays[activeDisplay].channels;
         selectChannels(activeChannels);
-
-        preloader.visible(true);
-        updatePlot(plot, activeChannels_old, activeChannels, date, channels)
-            .then(() => preloader.visible(false));
-    });
-
-    $('[name=channels]').change(function() {
-        activeChannels_old = activeChannels;
-        activeChannels = $('[name=channels]').val();
+        
+        preloader = anychart.ui.preloader();
+        preloader.render(document.getElementById("chart"));
         
         preloader.visible(true);
+        $("select").prop("disabled", true);
         updatePlot(plot, activeChannels_old, activeChannels, date, channels)
-            .then(() => preloader.visible(false));
-    });
+            .then(() => {
+                $("select").prop("disabled", false);
+                preloader.visible(false);
+            })*/
+
+        //Возможность выхода из фокуса поля "date" по Enter-у
+        $('form').submit(function(event) {
+            event.preventDefault();
+            $('[name=date]').blur();
+        });
+
+        chart.listen('click', function() {
+            $('input:focus').blur();
+        });
+
+        $('[name=date]').blur(function(){
+            var newDate = $('[name=date]').val();
+            
+            workDir = getWorkDir(techZone, newDate);
+            /*if (date != newDate) {
+                if (date.substring(0, 4) != newDate.substring(0, 4)) {
+                    channels = getChannels(newDate);
+                    setChannelList(channels);
+                    displays = getDisplays(date);
+                    setDisplayList(displays);
+                }
+                date = newDate;
+
+                activeChannels_old = activeChannels;
+                activeChannels = [];
+
+                preloader.visible(true);
+                updatePlot(plot, activeChannels_old, activeChannels, date, channels)
+                    .then(() => preloader.visible(false));
+                
+                activeChannels = activeChannels_old;
+                activeChannels_old = [];
+
+                preloader.visible(true);
+                updatePlot(plot, activeChannels_old, activeChannels, date, channels)
+                    .then(() => preloader.visible(false));
+            }*/
+        });
+
+        $('[name=display]').change(function() {
+            $('[name=channels] option:selected').prop('selected', '');
+            activeDisplay = $('[name=display] option:selected').val();
+            activeChannels_old = activeChannels;
+            activeChannels = displays[activeDisplay].channels;
+            selectChannels(activeChannels);
+
+            preloader.visible(true);
+            updatePlot(plot, activeChannels_old, activeChannels, date, channels)
+                .then(() => preloader.visible(false));
+        });
+
+        $('[name=channels]').change(function() {
+            activeChannels_old = activeChannels;
+            activeChannels = $('[name=channels]').val();
+            
+            preloader.visible(true);
+            updatePlot(plot, activeChannels_old, activeChannels, date, channels)
+                .then(() => preloader.visible(false));
+        });
+    }
+    else{
+        var errMsg = workDir[1];
+        console.log(errMsg);
+        showErrMessage($('#chart'), errMsg);
+    }
+
+
+    
 
     $('#shortcut-techZones').click(function(){
         if($('#tab-techZones').css('display') == 'none'){
