@@ -73,6 +73,43 @@ $(document).ready(function () {
                 preloader.visible(false);
             })
 
+        $('[name=techZone]').change(() => {
+            $('.errMessage').remove();
+            $('input, select').prop('disabled', false);
+
+            var techZone = $('[name=techZone]:checked').val();
+            var workDir_path = getWorkDir(techZone, date);
+
+            if(typeof workDir_path == 'string'){
+                var channelBas_path =  workDir_path + '/chanel.bas';
+                var displayDat_path =  workDir_path + '/display.dat';
+                var channels = getChannels(channelBas_path);
+                setChannelList(channels);
+                var displays = getDisplays(displayDat_path);
+                setDisplayList(displays);
+                var activeDisplay = $('[name=display] option:selected').val();
+                var activeChannels_old = [];
+                var activeChannels = displays[activeDisplay].channels;
+                selectChannels(activeChannels);
+                
+                preloader.visible(true);
+                $("select").prop("disabled", true);
+                var dateArr = date.split('-');
+                var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
+                updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
+                    .then(() => {
+                        $("select").prop("disabled", false);
+                        preloader.visible(false);
+                    })
+            }
+            else{
+                var errMsg = workDir_path[1];
+                showErrMessage($('#chart'), errMsg);
+                $('input, select').prop('disabled', true);
+                $('[name=techZone]').prop('disabled', false);
+            }
+        });
+
         //Возможность выхода из фокуса поля "date" по Enter-у
         $('form').submit(function(event) {
             event.preventDefault();
@@ -113,12 +150,10 @@ $(document).ready(function () {
                 var dateArr = date.split('-');
                 var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
                 updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels);
-                    //.then(() => preloader.visible(false));
                 
                 activeChannels = activeChannels_old;
                 activeChannels_old = [];
 
-                //preloader.visible(true);
                 var dateArr = date.split('-');
                 var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
                 updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)

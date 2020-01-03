@@ -68,7 +68,7 @@ option{
     display: block;
 }
 
-.tab-channels-list{
+#tab-channels-list{
     height: 100%;
     width: 100%;
     border: none;
