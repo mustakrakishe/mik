@@ -101,6 +101,8 @@ function getChannelData(channels, path) {
             resolve(response);
         })
         .fail(function (xhr, status, errorThrown) {
+            console.log('channels: ' + channels);
+            console.log('path: ' + path);
             alert(
                 'Ошибка запроса данных каналов.\n' +
                 "Error: " + errorThrown + '\n' +
@@ -122,7 +124,7 @@ function getChannelNames(channels, activeChannels) {
     return channelNames;
 }
 
-async function updatePlot(plot, activeChannels_old, activeChannels, date, channels){
+async function updatePlot(plot, activeChannels_old, activeChannels, path, channels){
     channelsToAdd = activeChannels.filter(function(element){
         return !(activeChannels_old.includes(element));
     });
@@ -144,8 +146,7 @@ async function updatePlot(plot, activeChannels_old, activeChannels, date, channe
     if(channelsToAdd.length){
 
         channelName = getChannelNames(channels, channelsToAdd);
-
-        var channelData = await getChannelData(channelsToAdd, date);
+        var channelData = await getChannelData(channelsToAdd, path);
         await addSeries(plot, channelData, channelsToAdd, channelName);
     }
 }

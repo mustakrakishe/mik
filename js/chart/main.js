@@ -49,12 +49,11 @@ $(document).ready(function () {
     $('input[name=techZone]:first').prop('checked', true);
     var techZone = $('input[name=techZone]').val();
     var date = $('[name=date]').val();
+    var workDir_path = getWorkDir(techZone, date);
 
-    var workDir = getWorkDir(techZone, date);
-
-    if(typeof workDir == 'string'){
-        var channelBas_path =  workDir + '/chanel.bas';
-        var displayDat_path =  workDir + '/display.dat';
+    if(typeof workDir_path == 'string'){
+        var channelBas_path =  workDir_path + '/chanel.bas';
+        var displayDat_path =  workDir_path + '/display.dat';
         var channels = getChannels(channelBas_path);
         setChannelList(channels);
         var displays = getDisplays(displayDat_path);
@@ -67,7 +66,7 @@ $(document).ready(function () {
         preloader.visible(true);
         $("select").prop("disabled", true);
         var dateArr = date.split('-');
-        var dataArh_path = workDir + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
+        var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
         updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
             .then(() => {
                 $("select").prop("disabled", false);
@@ -87,30 +86,44 @@ $(document).ready(function () {
         $('[name=date]').blur(function(){
             var newDate = $('[name=date]').val();
             
-            workDir = getWorkDir(techZone, newDate);
-            /*if (date != newDate) {
-                if (date.substring(0, 4) != newDate.substring(0, 4)) {
-                    channels = getChannels(newDate);
+            if (newDate != date) {
+                var preDate = date;
+                date = newDate;
+
+                var date_num = parseInt(date.replace(/-/g, ''));
+                var preDate_num = parseInt(preDate.replace(/-/g, ''));
+                var workDir_name = workDir_path.slice(workDir_path.lastIndexOf('/') + 1);
+                var workDirDate_num = parseInt(workDir_name.replace(/-/g, ''));
+
+                if ((date_num < workDirDate_num) || (date_num > preDate_num)) {
+                    
+                    workDir_path = getWorkDir(techZone, date);
+                    var channelBas_path =  workDir_path + '/chanel.bas';
+                    var displayDat_path =  workDir_path + '/display.dat';
+                    var channels = getChannels(channelBas_path);
                     setChannelList(channels);
-                    displays = getDisplays(date);
+                    var displays = getDisplays(displayDat_path);
                     setDisplayList(displays);
                 }
-                date = newDate;
 
                 activeChannels_old = activeChannels;
                 activeChannels = [];
 
                 preloader.visible(true);
-                updatePlot(plot, activeChannels_old, activeChannels, date, channels)
-                    .then(() => preloader.visible(false));
+                var dateArr = date.split('-');
+                var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
+                updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels);
+                    //.then(() => preloader.visible(false));
                 
                 activeChannels = activeChannels_old;
                 activeChannels_old = [];
 
-                preloader.visible(true);
-                updatePlot(plot, activeChannels_old, activeChannels, date, channels)
+                //preloader.visible(true);
+                var dateArr = date.split('-');
+                var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
+                updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
                     .then(() => preloader.visible(false));
-            }*/
+            }
         });
 
         $('[name=display]').change(function() {
@@ -121,7 +134,7 @@ $(document).ready(function () {
             selectChannels(activeChannels);
 
             preloader.visible(true);
-            updatePlot(plot, activeChannels_old, activeChannels, date, channels)
+            updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
                 .then(() => preloader.visible(false));
         });
 
@@ -130,18 +143,14 @@ $(document).ready(function () {
             activeChannels = $('[name=channels]').val();
             
             preloader.visible(true);
-            updatePlot(plot, activeChannels_old, activeChannels, date, channels)
+            updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
                 .then(() => preloader.visible(false));
         });
     }
     else{
-        var errMsg = workDir[1];
-        console.log(errMsg);
+        var errMsg = workDir_path[1];
         showErrMessage($('#chart'), errMsg);
     }
-
-
-    
 
     $('#shortcut-techZones').click(function(){
         if($('#tab-techZones').css('display') == 'none'){
@@ -151,13 +160,11 @@ $(document).ready(function () {
             $('#shortcut-techZones').css('background-color', 'rgb(77, 77, 77)');
             $('#tab-techZones').css('display', 'block');
             $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');
-            //$('.anychart-loader').css('width', 'calc(100% - 300px - 25px - 5px)');
         }
         else{
             $('#shortcut-techZones').css('background-color', '');
             $('#tab-techZones').css('display', 'none');
             $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
-            //$('.anychart-loader').css('width', 'calc(100% - 25px - 5px)');
         }
     });
 
@@ -169,13 +176,11 @@ $(document).ready(function () {
             $('#shortcut-channels').css('background-color', 'rgb(77, 77, 77)');
             $('#tab-channels').css('display', 'block');
             $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');
-            $('.anychart-loader').css('width', 'calc(100% - 300px - 25px - 5px)');
         }
         else{
             $('#shortcut-channels').css('background-color', '');
             $('#tab-channels').css('display', 'none');
             $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
-            $('.anychart-loader').css('width', 'calc(100% - 25px - 5px)');
         }
     });
 });
