@@ -74,8 +74,10 @@ $(document).ready(function () {
             })
 
         $('[name=techZone]').change(() => {
-            $('.errMessage').remove();
+            $('input, select').children().remove();
             $('input, select').prop('disabled', false);
+            plot.removeAllSeries();
+            $('.errMessage').remove();
 
             var techZone = $('[name=techZone]:checked').val();
             var workDir_path = getWorkDir(techZone, date);
@@ -107,6 +109,7 @@ $(document).ready(function () {
                 showErrMessage($('#chart'), errMsg);
                 $('input, select').prop('disabled', true);
                 $('[name=techZone]').prop('disabled', false);
+                $('select').append('<option>-- Нет данных --</option>');
             }
         });
 
