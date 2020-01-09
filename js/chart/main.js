@@ -80,18 +80,19 @@ $(document).ready(function () {
             $('.errMessage').remove();
 
             var techZone = $('[name=techZone]:checked').val();
+            
             var workDir_path = getWorkDir(techZone, date);
 
             if(typeof workDir_path == 'string'){
-                var channelBas_path =  workDir_path + '/chanel.bas';
-                var displayDat_path =  workDir_path + '/display.dat';
-                var channels = getChannels(channelBas_path);
+                channelBas_path =  workDir_path + '/chanel.bas';
+                displayDat_path =  workDir_path + '/display.dat';
+                channels = getChannels(channelBas_path);
                 setChannelList(channels);
-                var displays = getDisplays(displayDat_path);
+                displays = getDisplays(displayDat_path);
                 setDisplayList(displays);
-                var activeDisplay = $('[name=display] option:selected').val();
-                var activeChannels_old = [];
-                var activeChannels = displays[activeDisplay].channels;
+                activeDisplay = $('[name=display] option:selected').val();
+                activeChannels_old = [];
+                activeChannels = displays[activeDisplay].channels;
                 selectChannels(activeChannels);
                 
                 preloader.visible(true);
@@ -126,37 +127,22 @@ $(document).ready(function () {
         $('[name=date]').blur(function(){
             var newDate = $('[name=date]').val();
             
-            if (newDate != date) {
-                var preDate = date;
+            if(newDate != date) {
+                var preWorkDir_path = workDir_path;
                 date = newDate;
+                workDir_path = getWorkDir(techZone, date);
 
-                var date_num = parseInt(date.replace(/-/g, ''));
-                var preDate_num = parseInt(preDate.replace(/-/g, ''));
-                var workDir_name = workDir_path.slice(workDir_path.lastIndexOf('/') + 1);
-                var workDirDate_num = parseInt(workDir_name.replace(/-/g, ''));
-
-                if ((date_num < workDirDate_num) || (date_num > preDate_num)) {
-                    
-                    workDir_path = getWorkDir(techZone, date);
-                    var channelBas_path =  workDir_path + '/chanel.bas';
-                    var displayDat_path =  workDir_path + '/display.dat';
-                    var channels = getChannels(channelBas_path);
+                if (workDir_path != preWorkDir_path) {
+                    channelBas_path =  workDir_path + '/chanel.bas';
+                    displayDat_path =  workDir_path + '/display.dat';
+                    channels = getChannels(channelBas_path);
                     setChannelList(channels);
-                    var displays = getDisplays(displayDat_path);
+                    displays = getDisplays(displayDat_path);
                     setDisplayList(displays);
                 }
 
-                activeChannels_old = activeChannels;
-                activeChannels = [];
-
+                plot.removeAllSeries();
                 preloader.visible(true);
-                var dateArr = date.split('-');
-                var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
-                updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels);
-                
-                activeChannels = activeChannels_old;
-                activeChannels_old = [];
-
                 var dateArr = date.split('-');
                 var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
                 updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)

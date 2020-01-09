@@ -124,42 +124,54 @@ function getChannelNames(channels, activeChannels) {
     return channelNames;
 }
 
-async function updatePlot(plot, activeChannels_old, activeChannels, path, channels){
-    channelsToAdd = activeChannels.filter(function(element){
-        return !(activeChannels_old.includes(element));
-    });
-    
-    channelsToDelete = activeChannels_old.filter(function(element){
-        if(!(activeChannels.includes(element))){
-            return activeChannels_old.includes(element);
-        }
-    });
-    
-
-    if(channelsToDelete.length){
-        
-        channelsToDelete.forEach(function (channelNum){
-            plot.removeSeries(channelNum);
+function updatePlot(plot, activeChannels_old, activeChannels, path, channels){
+    return new Promise(resolve => {
+        channelsToAdd = activeChannels.filter(function(element){
+            return !(activeChannels_old.includes(element));
         });
-    }
-    
-    if(channelsToAdd.length){
+        
+        channelsToDelete = activeChannels_old.filter(function(element){
+            if(!(activeChannels.includes(element))){
+                return activeChannels_old.includes(element);
+            }
+        });
 
-        channelName = getChannelNames(channels, channelsToAdd);
-        var channelData = await getChannelData(channelsToAdd, path);
-        await addSeries(plot, channelData, channelsToAdd, channelName);
-    }
+        if(channelsToDelete.length){
+            channelsToDelete.forEach(function (channelNum){
+                plot.removeSeries(channelNum);
+            });
+        }
+        
+        if(channelsToAdd.length){
+            channelName = getChannelNames(channels, channelsToAdd);
+            getChannelData(channelsToAdd, path)
+            .then(channelData => {
+                addSeries(plot, channelData, channelsToAdd, channelName);            
+            })
+            .then(() => {
+                resolve();
+            })
+        }
+        else{
+            resolve();
+        }
+    })
 }
 
-async function addSeries(chart, data, id, names) {
-    var dataTable = anychart.data.table(0, 0, 2);
-    dataTable.addData(data);
+function addSeries(chart, data, id, names) {
+    return new Promise(resolve => {
 
-    id.reduce(function(value_pre, value, channelNum){
-        return value_pre
-            .then(() => chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]));
-        
-    }, Promise.resolve());
+        var dataTable = anychart.data.table(0, 0, 2);
+        dataTable.addData(data);
+
+        id.reduce(function(value_pre, value, channelNum){
+            return value_pre
+                .then(() => chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]));
+            
+        }, Promise.resolve())
+        .then(() => resolve());
+            
+    })
 }
 
 function showErrMessage(container, errText){
