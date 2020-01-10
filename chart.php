@@ -23,7 +23,7 @@
 <div id="mainContent-wrap" class="content-wrap">
     <div id="controlRow">
         <form action="" method="post">
-            <input type="date" name="date" value="2018-05-11">
+            <input id="date" type="date" name="date" value="2018-05-11">
             <select id="display" name="display"></select>
             <input type="submit" name="build_btn" hidden="hidden">
         </form>

@@ -26,6 +26,10 @@ form{
     display: inline;
 }
 
+input#date{
+    height: calc(100% - 4px);
+}
+
 select#display{
     height: 24px;
 }
