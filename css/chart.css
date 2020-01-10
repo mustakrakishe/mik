@@ -30,6 +30,7 @@ input#date{
     height: calc(100% - 4px);
 }
 
+select#techZone,
 select#display{
     height: 24px;
 }
@@ -74,7 +75,7 @@ option{
     display: block;
 }
 
-#tab-channels-list{
+#channels{
     height: 100%;
     width: 100%;
     border: none;
@@ -82,7 +83,7 @@ option{
     background-color: inherit;
 }
 
-#tab-channels-list:focus{
+#channels:focus{
     border: none;
 }
 

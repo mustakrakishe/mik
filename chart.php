@@ -23,8 +23,29 @@
 <div id="mainContent-wrap" class="content-wrap">
     <div id="controlRow">
         <form action="" method="post">
-            <input id="date" type="date" name="date" value="2018-05-11">
+            <select id="techZone" name="techZone">
+                <?php
+                    $path = "./data/";
+                    $techZones = [];
+
+                    if($handle = opendir($path)){
+                        while($entry = readdir($handle)){
+                            if(($entry != '.') && ($entry != '..')){
+                                array_push($techZones, $entry);
+                            }
+                        }
+                        closedir($handle);
+                    }
+                ?>
+
+                <?php
+                    foreach($techZones as $techZoneName){
+                        echo '<option value="' . $techZoneName . '">' . $techZoneName . '</label>';
+                    }
+                ?>
+            </select>
             <select id="display" name="display"></select>
+            <input id="date" type="date" name="date" value="2018-05-11">
             <input type="submit" name="build_btn" hidden="hidden">
         </form>
     </div>
@@ -32,33 +53,12 @@
     <div id="chart"></div>
 </div>
 
-<?php
-    $path = "./data/";
-    $techZones = [];
 
-    if($handle = opendir($path)){
-        while($entry = readdir($handle)){
-            if(($entry != '.') && ($entry != '..')){
-                array_push($techZones, $entry);
-            }
-        }
-        closedir($handle);
-    }
-?>
-
-<div id="tab-techZones" class="content-wrap tab">
-    <?php
-        foreach($techZones as $techZoneName){
-            echo '<label><input type="radio" name="techZone" value="' . $techZoneName . '">' . $techZoneName . '</label>';
-        }
-    ?>
-</div>
 <div id="tab-channels" class="content-wrap tab">
-    <select id="tab-channels-list" multiple id="tab-channels-list" name="channels"></select>
+    <select id="channels" name="channels" multiple></select>
 </div>
 
 <div id="side-bar">
-    <div id='shortcut-techZones' class='shortcut'><p>Тех. зоны</p></div>
     <div id='shortcut-channels' class='shortcut'><p>Каналы</p></div>
 </div>
 

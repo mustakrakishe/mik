@@ -33,7 +33,9 @@ body{
 }
 
 #content{
-    height: calc(100% - 30px);
+    /*height: calc(100% - 30px);*/
+    height: calc(100% - 10px);
+    padding: 5px 0;
 }
 
 h1, h2{

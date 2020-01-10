@@ -46,10 +46,11 @@ $(document).ready(function () {
     preloader = anychart.ui.preloader();
     preloader.render(document.getElementById("chart"));
 
-    $('input[name=techZone]:first').prop('checked', true);
-    var techZone = $('input[name=techZone]').val();
+    var techZone = $('[name=techZone] option:selected').val();
     var date = $('[name=date]').val();
     var workDir_path = getWorkDir(techZone, date);
+
+    console.log(workDir_path);
 
     if(typeof workDir_path == 'string'){
         var channelBas_path =  workDir_path + '/chanel.bas';
@@ -74,14 +75,14 @@ $(document).ready(function () {
             })
 
         $('[name=techZone]').change(() => {
-            $('input, select').children().remove();
+            $('[name=display], [name=channels]').children().remove();
             $('input, select').prop('disabled', false);
             plot.removeAllSeries();
             $('.errMessage').remove();
 
-            var techZone = $('[name=techZone]:checked').val();
+            techZone = $('[name=techZone] option:selected').val();
             
-            var workDir_path = getWorkDir(techZone, date);
+            workDir_path = getWorkDir(techZone, date);
 
             if(typeof workDir_path == 'string'){
                 channelBas_path =  workDir_path + '/chanel.bas';
@@ -110,7 +111,7 @@ $(document).ready(function () {
                 showErrMessage($('#chart'), errMsg);
                 $('input, select').prop('disabled', true);
                 $('[name=techZone]').prop('disabled', false);
-                $('select').append('<option>-- Нет данных --</option>');
+                $('#display, #channels').append('<option>-- Нет данных --</option>');
             }
         });
 
