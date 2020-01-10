@@ -23,7 +23,7 @@
 <div id="mainContent-wrap" class="content-wrap">
     <div id="controlRow">
         <form action="" method="post">
-            <select id="techZone" name="techZone">
+            <select id="techZone" name="techZone" class="controlItem">
                 <?php
                     $path = "./data/";
                     $techZones = [];
@@ -44,8 +44,8 @@
                     }
                 ?>
             </select>
-            <select id="display" name="display"></select>
-            <input id="date" type="date" name="date" value="2018-05-11">
+            <select id="display" name="display" class="controlItem"></select>
+            <input id="date" type="date" name="date" value="2018-05-11" class="controlItem">
             <input type="submit" name="build_btn" hidden="hidden">
         </form>
     </div>
@@ -55,7 +55,7 @@
 
 
 <div id="tab-channels" class="content-wrap tab">
-    <select id="channels" name="channels" multiple></select>
+    <select id="channels" name="channels" class="controlItem" multiple></select>
 </div>
 
 <div id="side-bar">
