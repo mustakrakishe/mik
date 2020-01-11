@@ -63,13 +63,13 @@ $(document).ready(function () {
         selectChannels(activeChannels);
         
         preloader.visible(true);
-        $("select").prop("disabled", true);
+        $(".controlItem").prop("disabled", true);
         var dateArr = date.split('-');
         var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
         anychart.exports.filename(techZone + ' ' + $('#display option:selected').text() + ' ' + date);
         updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
             .then(() => {
-                $("select").prop("disabled", false);
+                $(".controlItem").prop("disabled", false);
                 preloader.visible(false);
             })
 
@@ -97,8 +97,8 @@ $(document).ready(function () {
                 
                 preloader.visible(true);
                 $(".controlItem").prop("disabled", true);
-                var dateArr = date.split('-');
-                var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
+                dateArr = date.split('-');
+                dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
                 anychart.exports.filename(techZone + ' ' + $('#display option:selected').text() + ' ' + date);
                 updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
                     .then(() => {
@@ -144,8 +144,8 @@ $(document).ready(function () {
 
                 plot.removeAllSeries();
                 preloader.visible(true);
-                var dateArr = date.split('-');
-                var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
+                dateArr = date.split('-');
+                dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
                 anychart.exports.filename(techZone + ' ' + $('#display option:selected').text() + ' ' + date);
                 updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
                     .then(() => preloader.visible(false));
