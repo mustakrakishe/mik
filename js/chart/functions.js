@@ -42,17 +42,6 @@ function getChannels(path) {
     return channels;
 }
 
-function setChannelList(channels) {
-    if(channels){
-        channels.forEach(function (channel, i, channels) {
-            $('[name=channels]').append($('<option value="' + i + '">' + channel.name + '</option>'));
-        })
-    }
-    else{
-        console.log('Невозможно заполнить список каналов. Массив каналов не получен.');
-    }
-}
-
 function getDisplays(path) {
     var displays = [];
 
@@ -74,11 +63,16 @@ function getDisplays(path) {
     return displays;
 }
 
-function setDisplayList(displays) {
-    displays.forEach(function (display, i, displays) {
-        $('[name=display]').append($('<option value="' + i + '">' + display.name + '</option>'));
-    })
-};
+function fillTheSelect(select, objects) {
+    if(objects){
+        objects.forEach(function (object, objectNum) {
+            select.append($('<option value="' + objectNum + '">' + object.name + '</option>'));
+        })
+    }
+    else{
+        console.log('Невозможно заполнить список ' + select.attr('name') + '. Данные для заполнения не получены.');
+    }
+}
 
 function selectChannels(channels) {
     channels.forEach(function (channel, i, channels) {
@@ -124,15 +118,20 @@ function getChannelNames(channels, activeChannels) {
     return channelNames;
 }
 
-function updatePlot(plot, activeChannels_old, activeChannels, path, channels){
+function updatePlot(plot, channelList, channelData_path, channels){
     return new Promise(resolve => {
-        channelsToAdd = activeChannels.filter(function(element){
-            return !(activeChannels_old.includes(element));
+        var channelList_old = [];
+        for (var seriesNum = 0; seriesNum < plot.getSeriesCount(); seriesNum++){
+            channelList_old.push(plot.getSeriesAt(seriesNum).id());
+        }
+
+        channelsToAdd = channelList.filter(function(element){
+            return !(channelList_old.includes(element));
         });
         
-        channelsToDelete = activeChannels_old.filter(function(element){
-            if(!(activeChannels.includes(element))){
-                return activeChannels_old.includes(element);
+        channelsToDelete = channelList_old.filter(function(element){
+            if(!(channelList.includes(element))){
+                return channelList_old.includes(element);
             }
         });
 
@@ -144,7 +143,7 @@ function updatePlot(plot, activeChannels_old, activeChannels, path, channels){
         
         if(channelsToAdd.length){
             channelName = getChannelNames(channels, channelsToAdd);
-            getChannelData(channelsToAdd, path)
+            getChannelData(channelsToAdd, channelData_path)
             .then(channelData => {
                 addSeries(plot, channelData, channelsToAdd, channelName);            
             })

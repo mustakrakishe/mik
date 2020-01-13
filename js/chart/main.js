@@ -51,23 +51,17 @@ $(document).ready(function () {
     var workDir_path = getWorkDir(techZone, date);
 
     if(typeof workDir_path == 'string'){
-        var channelBas_path =  workDir_path + '/chanel.bas';
-        var displayDat_path =  workDir_path + '/display.dat';
-        var channels = getChannels(channelBas_path);
-        setChannelList(channels);
-        var displays = getDisplays(displayDat_path);
-        setDisplayList(displays);
-        var activeDisplay = $('#display option:selected').val();
-        var activeChannels_old = [];
-        var activeChannels = displays[activeDisplay].channels;
-        selectChannels(activeChannels);
+        var displays = [];
+        var channels = [];
+        var activeChannels = [];
+        [activeChannels, channels] = subPart_applyConfigFiles(workDir_path);
         
         preloader.visible(true);
         $(".controlItem").prop("disabled", true);
         var dateArr = date.split('-');
         var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
         anychart.exports.filename(techZone + ' ' + $('#display option:selected').text() + ' ' + date);
-        updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
+        updatePlot(plot, activeChannels, dataArh_path, channels)
             .then(() => {
                 $(".controlItem").prop("disabled", false);
                 preloader.visible(false);
@@ -84,23 +78,14 @@ $(document).ready(function () {
             workDir_path = getWorkDir(techZone, date);
 
             if(typeof workDir_path == 'string'){
-                channelBas_path =  workDir_path + '/chanel.bas';
-                displayDat_path =  workDir_path + '/display.dat';
-                channels = getChannels(channelBas_path);
-                setChannelList(channels);
-                displays = getDisplays(displayDat_path);
-                setDisplayList(displays);
-                activeDisplay = $('#display option:selected').val();
-                activeChannels_old = [];
-                activeChannels = displays[activeDisplay].channels;
-                selectChannels(activeChannels);
+                [activeChannels, channels] = subPart_applyConfigFiles(workDir_path);
                 
                 preloader.visible(true);
                 $(".controlItem").prop("disabled", true);
                 dateArr = date.split('-');
                 dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
                 anychart.exports.filename(techZone + ' ' + $('#display option:selected').text() + ' ' + date);
-                updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
+                updatePlot(plot, activeChannels, dataArh_path, channels)
                     .then(() => {
                         $(".controlItem").prop("disabled", false);
                         preloader.visible(false);
@@ -134,12 +119,7 @@ $(document).ready(function () {
                 workDir_path = getWorkDir(techZone, date);
 
                 if (workDir_path != preWorkDir_path) {
-                    channelBas_path =  workDir_path + '/chanel.bas';
-                    displayDat_path =  workDir_path + '/display.dat';
-                    channels = getChannels(channelBas_path);
-                    setChannelList(channels);
-                    displays = getDisplays(displayDat_path);
-                    setDisplayList(displays);
+                    [activeChannels, channels] = subPart_applyConfigFiles(workDir_path);
                 }
 
                 plot.removeAllSeries();
@@ -147,7 +127,7 @@ $(document).ready(function () {
                 dateArr = date.split('-');
                 dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
                 anychart.exports.filename(techZone + ' ' + $('#display option:selected').text() + ' ' + date);
-                updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
+                updatePlot(plot, activeChannels, dataArh_path, channels)
                     .then(() => preloader.visible(false));
             }
         });
@@ -155,13 +135,13 @@ $(document).ready(function () {
         $('#display').change(function() {
             $('#channels option:selected').prop('selected', '');
             activeDisplay = $('#display option:selected').val();
-            activeChannels_old = activeChannels;
+
             activeChannels = displays[activeDisplay].channels;
             selectChannels(activeChannels);
 
             preloader.visible(true);
             anychart.exports.filename(techZone + ' ' + $('#display option:selected').text() + ' ' + date);
-            updatePlot(plot, activeChannels_old, activeChannels, dataArh_path, channels)
+            updatePlot(plot, activeChannels, dataArh_path, channels)
                 .then(() => preloader.visible(false));
         });
 
@@ -192,3 +172,17 @@ $(document).ready(function () {
         }
     });
 });
+
+function subPart_applyConfigFiles(workDir_path){
+    var channelBas_path =  workDir_path + '/chanel.bas';
+    var displayDat_path =  workDir_path + '/display.dat';
+    var channels = getChannels(channelBas_path);
+    var displays = getDisplays(displayDat_path);
+    fillTheSelect($('#channels'), channels);
+    fillTheSelect($('#display'), displays);
+    var activeDisplay = $('#display option:selected').val();
+    var activeChannels = displays[activeDisplay].channels;
+    selectChannels(activeChannels);
+
+    return [activeChannels, channels];
+}
