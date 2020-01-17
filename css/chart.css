@@ -47,12 +47,12 @@ select#display{
     height: calc(100% - 39px);
 }
 
-.anychart-loader{
-    width: calc(100% - 10px);
+/*.anychart-loader{
+    width: 100%;
     height: calc(100% - 39px - 25px - 5px);
     top: calc(25px + 39px);
     left: 5px;
-}
+}*/
 
 .tab{
     display: none;
@@ -116,12 +116,6 @@ option{
     display: table-cell;
     vertical-align: middle;
     cursor: default;
-
-    /*user-select: none;
-    -ms-user-select: none;
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;*/
 }
 
 .shortcut:hover{

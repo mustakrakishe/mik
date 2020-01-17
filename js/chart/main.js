@@ -13,7 +13,7 @@ $(document).ready(function () {
     chart.interactivity().zoomOnMouseWheel(true);
     chart.crosshair().xLabel(false);
     chart.crosshair().yLabel(false);
-    chart.margin(-5, -25, -25, -15);
+    chart.margin(-5, -25, -35, -15);
 
     chart.contextMenu().itemsFormatter(function(items){
        delete items["save-data-as"];
@@ -28,41 +28,19 @@ $(document).ready(function () {
     plot.legend().fontColor('Black');
     plot.legend().position('bottom');
     plot.legend().itemsLayout("horizontal-expandable");
+    plot.legend().padding().top(35);
     plot.legend().title(false);
     plot.crosshair().yStroke(null);
     plot.xMinorGrid(true);
     plot.yMinorGrid(true);
-    plot.xAxis().labels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}');
-    plot.xAxis().minorLabels(false);
-    //plot.xAxis().minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}');
-    //plot.xAxis().minorLabels().fontColor('black');
+    plot.xAxis().minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}').fontColor('black');
+    plot.xAxis().labels(false);
     plot.yAxis().labels().fontColor('black');
     plot.yAxis().ticks(false);
     plot.yAxis().stroke('black');
     plot.xAxis().background().enabled(true).stroke('none').fill('none');
     plot.xAxis().background().topStroke('1 black');
-    chart.xScale().ticks([{major: {unit: 'hour', count: 2}, minor : {unit:'hour', count: 1}}]);
-    chart.listen('selectedrangechange', function() {
-        var v = new Date(1970, 1, 1);
-        console.log('v: ' + v);
-
-        var plotTimeRange = chart.getSelectedRange();
-        var plotTimeInterval = plotTimeRange.lastSelected - plotTimeRange.firstSelected;
-        console.log('Интервал: ' + anychart.format.dateTime(plotTimeInterval, 'dd/MM/yy HH:mm:ss') + ' ' + plotTimeInterval);
-        console.log('firstSelected: ' + anychart.format.dateTime(plotTimeRange.firstSelected, 'dd/MM/yy HH:mm:ss'));
-        console.log('lastSelected: ' + anychart.format.dateTime(plotTimeRange.lastSelected, 'dd/MM/yy HH:mm:ss'));
-        console.log('firstVisible: ' + anychart.format.dateTime(plotTimeRange.firstVisible, 'dd/MM/yy HH:mm:ss'));
-        console.log('lastVisible: ' + anychart.format.dateTime(plotTimeRange.lastVisible, 'dd/MM/yy HH:mm:ss'));
-        /*if (grouping.unit == 'month') {
-            scale.ticks([{major: {unit: 'year', count: 2}, minor : {unit:'year', count: 1}}]);
-        }
-            if (grouping.unit == 'week') {
-            scale.ticks([{major: {unit: 'year', count: 1}, minor : {unit:'month', count: 6}}]);
-        }
-            if (grouping.unit == 'day') {
-            scale.ticks([{major: {unit: 'month', count: 6}, minor : {unit:'month', count: 1}}]);
-        }*/
-    });
+    chart.xScale().ticksCount(12);
 
     chart.draw();
 
