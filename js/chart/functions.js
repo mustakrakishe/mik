@@ -159,6 +159,7 @@ function updatePlot(plot, channelList, channelData_path, channels){
 
 function addSeries(chart, data, id, names) {
     return new Promise(resolve => {
+        //var colorMap = ['#008000', '#CC6600', '#FF0000', '#008080', '#FF00FF', '#333333‬', '#8000FF', '#663300']
 
         var dataTable = anychart.data.table(0, 0, 2);
         dataTable.addData(data);
