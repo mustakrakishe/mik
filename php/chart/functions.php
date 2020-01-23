@@ -12,10 +12,14 @@
         class channel{
             public $name = '';
             public $units = '';
+            public $scaleL = '';
+            public $scaleH = '';
 
-            function __construct($name, $units){
+            function __construct($name, $units, $scaleL, $scaleH){
                 $this->name = $name;
                 $this->units = $units;
+                $this->scaleL = $scaleL;
+                $this->scaleH = $scaleH;
             }
         }
         $handle = fopen($path, 'r');
@@ -34,10 +38,10 @@
                 $crushH,
                 $arch
             ) = preg_split('@[\\\/(,);\[|#$:~]|(]R>0<)@', $string);*/
-            
+            //если архивация = 1
             if((int)substr($string, strpos($string, '<') + 1, 1)){
-                list($name, , $units, , $arch) = preg_split('@[\\\/(<#]@', $string);
-                array_push($channels, new channel($name, $units));
+                list($name, , $units, $scaleL, $scaleH, , $arch) = preg_split('@[\\\/(\,)<#]@', $string);
+                array_push($channels, new channel($name, $units, $scaleL, $scaleH));
             }
         }
 

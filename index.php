@@ -7,6 +7,4 @@
     header('location: chart.php');
 ?>
 
-
-
 <?php require 'php/common/foot.php'; ?>

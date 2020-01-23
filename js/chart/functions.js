@@ -109,13 +109,15 @@ function getChannelData(channels, path) {
     
 }
 
-function getChannelNames(channels, activeChannels) {
-    var channelNames = [];
-    activeChannels.forEach(function (channel) {
-        channelNames.push(channels[channel].name);
+function getChannelsInfo(channels, activeChannels) {
+    var channelsInfo = [];
+    activeChannels.forEach(function (channelNum) {
+        var channelInfo = channels[channelNum];
+        channelInfo['id'] = channelNum;
+        channelsInfo.push(channels[channelNum]);
     })
 
-    return channelNames;
+    return channelsInfo;
 }
 
 function updatePlot(plot, channelList, channelData_path, channels){
@@ -142,10 +144,10 @@ function updatePlot(plot, channelList, channelData_path, channels){
         }
         
         if(channelsToAdd.length){
-            channelName = getChannelNames(channels, channelsToAdd);
+            var channelsInfo = getChannelsInfo(channels, channelsToAdd);
             getChannelData(channelsToAdd, channelData_path)
-            .then(channelData => {
-                addSeries(plot, channelData, channelsToAdd, channelName);            
+            .then(channelData => { 
+                addSeries(plot, channelData, channelsInfo);
             })
             .then(() => {
                 resolve();
@@ -157,20 +159,29 @@ function updatePlot(plot, channelList, channelData_path, channels){
     })
 }
 
-function addSeries(chart, data, id, names) {
+function addSeries(chart, seriesData, seriesInfo) {
     return new Promise(resolve => {
-        //var colorMap = ['#008000', '#CC6600', '#FF0000', '#008080', '#FF00FF', '#333333‬', '#8000FF', '#663300']
-
         var dataTable = anychart.data.table(0, 0, 2);
-        dataTable.addData(data);
+        dataTable.addData(seriesData);
 
-        id.reduce(function(value_pre, value, channelNum){
-            return value_pre
-                .then(() => chart.line(dataTable.mapAs({ value: channelNum + 1 })).name(names[channelNum]).id(id[channelNum]));
-            
-        }, Promise.resolve())
-        .then(() => resolve());
-            
+
+        seriesInfo.forEach(function(serieInfo, serieNum){
+            console.log(serieInfo);
+            var mapping = dataTable.mapAs({ value: serieNum + 1 });
+            var series = chart.line(mapping);
+            series.name(serieInfo.name).id(serieInfo.id);
+            var yScale = anychart.scales.linear();
+            yScale.minimum(0);
+            yScale.maximum(5000);
+            /*var ticks = yScale.ticks();
+            ticks.interval(500000000);*/
+            /*var units = data[channelNum + 1].units
+            chart.legend().itemsFormat(() =>{
+                return this.x + ' '
+            });*/
+
+        })
+        resolve();
     })
 }
 

@@ -25,6 +25,8 @@ $(document).ready(function () {
        return items;
     });
 
+    
+    
     plot.legend().fontColor('Black');
     plot.legend().position('bottom');
     plot.legend().itemsLayout("horizontal-expandable");
@@ -44,8 +46,6 @@ $(document).ready(function () {
 
     chart.draw();
 
-    
-
     preloader = anychart.ui.preloader();
     preloader.render(document.getElementById("chart"));
 
@@ -55,6 +55,7 @@ $(document).ready(function () {
 
     if(typeof workDir_path == 'string'){
         var channelBas_path =  workDir_path + '/chanel.bas';
+        console.log(channelBas_path);
         var displayDat_path =  workDir_path + '/display.dat';
         var channels = getChannels(channelBas_path);
         var displays = getDisplays(displayDat_path);
