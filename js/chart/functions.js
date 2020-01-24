@@ -176,6 +176,8 @@ function addSeries(chart, seriesData, seriesInfo) {
             var yAxis = chart.yAxis(serieNum);
             yAxis.scale(yScale);
             serie.yScale(yScale);
+
+            serie.legendItem().format("{%seriesName}: {%value} " + serieInfo.units);
         })
 
         resolve();
