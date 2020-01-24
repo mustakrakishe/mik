@@ -178,6 +178,9 @@ function addSeries(chart, seriesData, seriesInfo) {
                 return this.value/serieInfo.scaleH*100 + '%';
             });
             serie.yScale(yScale);
+            
+            chart.yAxis().labels(true);
+            serie.yScale().ticks().count(6);
 
             serie.legendItem().format("{%seriesName}: {%value} " + serieInfo.units);
             serie.tooltip().format("{%seriesName}: {%value} " + serieInfo.units);

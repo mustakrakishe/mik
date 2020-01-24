@@ -33,17 +33,19 @@ $(document).ready(function () {
     plot.legend().padding().top(35);
     plot.legend().title(false);
     plot.crosshair().yStroke(null);
+
     plot.xMinorGrid(true);
-    plot.yMinorGrid(true);
     plot.xAxis().minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}').fontColor('black');
     plot.xAxis().labels(false);
-    plot.yAxis().labels().fontColor('black');
-    plot.yAxis().ticks(false);
-    plot.yAxis().stroke('black');
     plot.xAxis().background().enabled(true).stroke('none').fill('none');
     plot.xAxis().background().topStroke('1 black');
     chart.xScale().ticksCount(12);
-    plot.yScale().ticks().count(6);
+    
+    plot.yMinorGrid(true);
+    plot.yAxis().labels().fontColor('black');
+    plot.yAxis().ticks(false);
+    plot.yAxis().stroke('black');
+    plot.yAxis().labels(false);
 
     chart.draw();
 
