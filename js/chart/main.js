@@ -43,6 +43,7 @@ $(document).ready(function () {
     plot.xAxis().background().enabled(true).stroke('none').fill('none');
     plot.xAxis().background().topStroke('1 black');
     chart.xScale().ticksCount(12);
+    plot.yScale().ticks().count(6);
 
     chart.draw();
 

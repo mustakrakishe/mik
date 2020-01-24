@@ -4,7 +4,7 @@
 <h1>Главная</h1>
 
 <?php
-    //header('location: chart.php');
+    header('location: chart.php');
     $path = 'D:\documents\task\task2018_web_interface\page\current\data\O11\2018-05-11\chanel.bas';
     $channels = [];
 

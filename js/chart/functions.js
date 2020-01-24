@@ -174,7 +174,9 @@ function addSeries(chart, seriesData, seriesInfo) {
             yScale.maximum(serieInfo.scaleH);
 
             var yAxis = chart.yAxis(serieNum);
-            yAxis.scale(yScale);
+            yAxis.scale(yScale).labels().format(function(){
+                return this.value/serieInfo.scaleH*100 + '%';
+            });
             serie.yScale(yScale);
 
             serie.legendItem().format("{%seriesName}: {%value} " + serieInfo.units);
