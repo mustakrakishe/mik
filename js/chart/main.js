@@ -55,7 +55,6 @@ $(document).ready(function () {
 
     if(typeof workDir_path == 'string'){
         var channelBas_path =  workDir_path + '/chanel.bas';
-        console.log(channelBas_path);
         var displayDat_path =  workDir_path + '/display.dat';
         var channels = getChannels(channelBas_path);
         var displays = getDisplays(displayDat_path);

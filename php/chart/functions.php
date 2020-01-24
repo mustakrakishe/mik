@@ -26,21 +26,19 @@
 
         while(!feof($handle)){
             $string = iconv("windows-1251","utf-8", fgets($handle));
-            /*list(
-                $name,
-                ,
-                $units,
-                $scaleL,
-                $scaleH,
-                $techL,
-                $techH,
-                $crushL,
-                $crushH,
-                $arch
-            ) = preg_split('@[\\\/(,);\[|#$:~]|(]R>0<)@', $string);*/
             //если архивация = 1
             if((int)substr($string, strpos($string, '<') + 1, 1)){
-                list($name, , $units, $scaleL, $scaleH, , $arch) = preg_split('@[\\\/(\,)<#]@', $string);
+                $data = [];
+                $separators = ['\\', '/', '(', ',', ')', '<', '#'];
+                $firstCharPos = 0;
+                foreach($separators as $separator){
+                    $lastCharPos = strpos($string, $separator);
+                    $sliceLength = $lastCharPos - $firstCharPos;
+                    array_push($data, substr($string, $firstCharPos, $sliceLength));
+                    $firstCharPos = $lastCharPos + 1;
+                }
+                list($name, , $units, $scaleL, $scaleH) = $data;
+
                 array_push($channels, new channel($name, $units, $scaleL, $scaleH));
             }
         }
