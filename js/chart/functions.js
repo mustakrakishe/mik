@@ -175,7 +175,7 @@ function addSeries(chart, seriesData, seriesInfo) {
 
             var yAxis = chart.yAxis(serieNum);
             yAxis.scale(yScale).labels().format(function(){
-                return this.value/serieInfo.scaleH*100 + '%';
+                return (this.value/serieInfo.scaleH*100).toFixed() + '%';
             });
             serie.yScale(yScale);
             
