@@ -201,15 +201,38 @@ $(document).ready(function () {
         showErrMessage($('#chart'), errMsg);
     }
 
-    $('#shortcut-channels').click(function(){
-        if($('#tab-channels').css('display') == 'none'){
-            $('#shortcut-channels').css('background-color', 'rgb(77, 77, 77)');
-            $('#tab-channels').css('display', 'block');
+    /*Отобhажение боковой панели*/
+    $('.shortcut').click(function(){
+        var activatedShortcutId = this.getAttribute('id');
+        var activatedTabId = activatedShortcutId.replace('shortcut-', 'tab-');
+
+        var activatedShortcut = this;
+        var activatedTab = $('#' + activatedTabId);
+
+        //Если была неактивна
+        if($(activatedTab).css('display') == 'none'){
+
+            var openedTab = $('.tab').filter(function(){ 
+                return this.style.display == 'block';
+            });
+
+            if(openedTab.length){
+                var openedTabId = $(openedTab).attr('id');
+                var activeShortcutId = openedTabId.replace('tab-', 'shortcut-');
+                
+                var activeShortcut = $('#' + activeShortcutId);
+                $(openedTab).css('display', 'none');
+                activeShortcut.css('background-color', '');
+            }
+
+            $(activatedShortcut).css('background-color', 'rgb(77, 77, 77)');
+            $(activatedTab).css('display', 'block');
             $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');
         }
+        //Если была активна
         else{
-            $('#shortcut-channels').css('background-color', '');
-            $('#tab-channels').css('display', 'none');
+            $(this).css('background-color', '');
+            activatedTab.css('display', 'none');
             $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
         }
     });
