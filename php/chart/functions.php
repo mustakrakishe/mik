@@ -98,6 +98,8 @@
         $SIZE_DATE = 16;
         $SIZE_CONF = 61;
         $SIZE_VALUE = 4;
+
+        $EMPTY_VALUE_CODE = 11111;
         
         $date = str_split(basename($path, ".arh"), 2);
         filemtime($path);
@@ -111,15 +113,21 @@
         $timeB = strtotime(date('Y-m-d', filemtime($path)-1).' 00:00:00');
 
         fseek($fileHandler, $size_serviceData);
-            for ($pointNum=0; $pointNum<$pointCount; $pointNum++){
-                $point = [($timeB + $interval * $pointNum) * 1000];
-                foreach($channels as $key => $channel){
-                    fseek($fileHandler, $size_serviceData + $shift * $pointNum + $SIZE_VALUE * $channel);
-                    $value = round(unpack('f*', fread($fileHandler, $SIZE_VALUE), SEEK_SET)[1], 3);
-                    array_push($point, $value);
+        for ($pointNum=0; $pointNum<$pointCount; $pointNum++){
+            $point = [($timeB + $interval * $pointNum) * 1000];
+            foreach($channels as $key => $channel){
+                fseek($fileHandler, $size_serviceData + $shift * $pointNum + $SIZE_VALUE * $channel);
+                $readedValue = unpack('f*', fread($fileHandler, $SIZE_VALUE), SEEK_SET)[1];
+                if($readedValue != $EMPTY_VALUE_CODE){
+                    $writedValue = round($readedValue, 3);
+                    array_push($point, $writedValue);
                 }
-                array_push($channelData, $point);
+                else{
+                    $point = [];
+                }
             }
+            array_push($channelData, $point);
+        }
             
         fclose($fileHandler);
         return $channelData;
