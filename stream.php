@@ -126,7 +126,7 @@ var plot;
         update(plot);
 
         
-        /*Отобhажение боковой панели*/
+        /*Отображение боковой панели*/
         $('.shortcut').click(function(){
             var activatedShortcutId = this.getAttribute('id');
             var activatedTabId = activatedShortcutId.replace('shortcut-', 'tab-');
@@ -163,6 +163,7 @@ var plot;
         });
     });
     
+    //Загрузка существующих данных
     function update(){
         var channelBas_path = $('#chanelBas_path').val();
         var displayDat_path = $('#displayDat_path').val();
@@ -185,6 +186,28 @@ var plot;
                 preloader.visible(false);
             })
     }
+
+    function lastPoint()
+
+    function startStream() {
+        setInterval(
+            function() {
+                dataSet.append({
+                    x: "P" + indexSetter,
+                    value : Math.floor((Math.random() * 500)+ 1)
+                });
+                dataSet.remove(0);
+                indexSetter++;
+            }, 200
+        )};
+        streamButton.onclick = function() {
+            clearInterval(myVar);
+            streamButton.onclick = function () {
+                startStream();
+            };
+            streamButton.innerHTML = "Start" + "\nstream";
+        };
+    };
 </script>
 
 
