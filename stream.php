@@ -12,6 +12,9 @@
 <script src='js/libraries/anychart/anychart-ui.min.js'></script>
 
 
+<script src='js/chart/functions.js'></script>
+
+
 <script>
     anychart.format.inputLocale('ru-ru');
     anychart.format.outputLocale('ru-ru');
@@ -54,7 +57,12 @@
 <div id="tab-channels" class="content-wrap tab">
     <select id="channels" name="channels" class="controlItem" multiple></select>
 </div>
-<div id="tab-paths" class="content-wrap tab"></div>
+<div id="tab-paths" class="content-wrap tab">
+    <p>ddmm.arh</p><input type="text" name="ddmmArh_path" id="ddmmArh_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\0302.arh">
+    <p>display.dat</p><input type="text" name="displayDat_path" id="displayDat_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\display.dat">
+    <p>chanel.bas</p><input type="text" name="chanelBas_path" id="chanelBas_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\chanel.bas">
+    <button onclick="update()">Обновить</button>
+</div>
 
 <div id="side-bar">
     <div id='shortcut-channels' class='shortcut'><p>Каналы</p></div>
@@ -62,10 +70,8 @@
 </div>
 
 
-
-<?php require 'php/common/foot.php'; ?>
-
 <script>
+var plot;
     $(document).ready(function (){
         anychart.exports.server("http://localhost:2000");
         anychart.format.inputLocale('ru-ru');
@@ -73,7 +79,7 @@
 
         //create chart
         var chart = anychart.stock();
-        var plot = chart.plot();
+        plot = chart.plot();
 
         chart.container('chart');
         chart.scroller(false);
@@ -117,28 +123,9 @@
 
         preloader = anychart.ui.preloader();
         preloader.render(document.getElementById("chart"));
+        update(plot);
 
-        /*var channelBas_path =  workDir_path + '/chanel.bas';
-        var displayDat_path =  workDir_path + '/display.dat';
-        var channels = getChannels(channelBas_path);
-        var displays = getDisplays(displayDat_path);
-        fillTheSelect($('#channels'), channels);
-        fillTheSelect($('#display'), displays);
-        var activeDisplay = $('#display option:selected').val();
-        var activeChannels = displays[activeDisplay].channels;
-        selectChannels(activeChannels);
         
-        preloader.visible(true);
-        $(".controlItem").prop("disabled", true);
-        var dateArr = date.split('-');
-        var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
-        anychart.exports.filename(techZone + ' ' + $('#display option:selected').text() + ' ' + date);
-        updatePlot(plot, activeChannels, dataArh_path, channels)
-            .then(() => {
-                $(".controlItem").prop("disabled", false);
-                preloader.visible(false);
-            })*/
-
         /*Отобhажение боковой панели*/
         $('.shortcut').click(function(){
             var activatedShortcutId = this.getAttribute('id');
@@ -175,7 +162,31 @@
             }
         });
     });
+    
+    function update(){
+        var channelBas_path = $('#chanelBas_path').val();
+        var displayDat_path = $('#displayDat_path').val();
+        var channels = getChannels(channelBas_path);
+        var displays = getDisplays(displayDat_path);
+        fillTheSelect($('#channels'), channels);
+        fillTheSelect($('#display'), displays);
+        var activeDisplay = $('#display option:selected').val();
+        var activeChannels = displays[activeDisplay].channels;
+        selectChannels(activeChannels);
+
+        var dataArh_path = $('#ddmmArh_path').val();
+
+        preloader.visible(true);
+        $(".controlItem").prop("disabled", true);
+
+        updatePlot(plot, activeChannels, dataArh_path, channels)
+            .then(() => {
+                $(".controlItem").prop("disabled", false);
+                preloader.visible(false);
+            })
+    }
 </script>
 
 
+<?php require 'php/common/foot.php'; ?>
 
