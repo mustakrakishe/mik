@@ -91,42 +91,51 @@
         return $displays;
     }
 
-    function getChannelData($path, $channels){
+    function parseArhFile($path, $channelIds, $timeB, $timeE){
         $channelData = [];
 
-        $SIZE_CHANNEL_COUNT = 2;
-        $SIZE_DATE = 16;
-        $SIZE_CONF = 61;
-        $SIZE_VALUE = 4;
+        $SECONDS_PER_DAY = 86400; //60s*60m*24h
+
+        $BYTES_PER_CHANNEL_COUNT = 2;
+        $BYTES_PER_DATE = 16;
+        $BYTES_PER_CONF = 61;
+        $BYTES_PER_VALUE = 4;
 
         $EMPTY_VALUE_CODE = 11111;
         
-        $date = str_split(basename($path, ".arh"), 2);
-        filemtime($path);
         $fileHandler = fopen($path, 'rb');
-        $file_channelCount = unpack('S*', fread($fileHandler, $SIZE_CHANNEL_COUNT), 0)[1];
-        $size_serviceData = $SIZE_CHANNEL_COUNT+$SIZE_DATE+$SIZE_CONF*$file_channelCount;
-        $pointCount = (filesize($path)-$size_serviceData)/($SIZE_VALUE*$file_channelCount)-1;
-        $interval = 86400/$pointCount;
-        $shift = $SIZE_VALUE*$file_channelCount;
+        $file_channelCount = unpack('S*', fread($fileHandler, $BYTES_PER_CHANNEL_COUNT), 0)[1];
+        $bytesPerServiceData = $BYTES_PER_CHANNEL_COUNT + $BYTES_PER_DATE + $BYTES_PER_CONF * $file_channelCount;
+        $file_pointCount = (filesize($path) - $bytesPerServiceData)/($BYTES_PER_VALUE * $file_channelCount)-1;  //-1 потому, что в ddmm.arh последняя точка имеет время 24:00:00
+        $file_pointTimeStep = $SECONDS_PER_DAY/$file_pointCount;
+        $bytesPerOneTimePoints = $BYTES_PER_VALUE*$file_channelCount;
 
-        $timeB = strtotime(date('Y-m-d', filemtime($path)-1).' 00:00:00');
+        $firstPointNum = floor(($timeB - mktime(0, 0, 0))/$file_pointTimeStep);
+        $lastPointNum = ceil(($timeE - mktime(0, 0, 0))/$file_pointTimeStep);
+        if ($lastPointNum > $file_pointCount){
+            $lastPointNum = $file_pointCount;
+        }
 
-        fseek($fileHandler, $size_serviceData);
-        for ($pointNum=0; $pointNum<$pointCount; $pointNum++){
-            $point = [($timeB + $interval * $pointNum) * 1000];
-            foreach($channels as $key => $channel){
-                fseek($fileHandler, $size_serviceData + $shift * $pointNum + $SIZE_VALUE * $channel);
-                $readedValue = unpack('f*', fread($fileHandler, $SIZE_VALUE), SEEK_SET)[1];
+        
+        //$date = str_split(basename($path, ".arh"), 2);
+        $date = strtotime(date('Y-m-d', filemtime($path)-1).' 00:00:00');
+        //date_date_set()
+
+        fseek($fileHandler, $bytesPerServiceData);
+        for ($pointNum = $firstPointNum; $pointNum <= $lastPointNum; $pointNum++){
+            $momentData = [($date + $file_pointTimeStep * $pointNum)*1000];
+            foreach($channelIds as $channelNum => $channelId){
+                fseek($fileHandler, $bytesPerServiceData + $bytesPerOneTimePoints * $pointNum + $BYTES_PER_VALUE * $channelId);
+                $readedValue = unpack('f*', fread($fileHandler, $BYTES_PER_VALUE), SEEK_SET)[1];
                 if($readedValue != $EMPTY_VALUE_CODE){
                     $writedValue = round($readedValue, 3);
-                    array_push($point, $writedValue);
+                    array_push($momentData, $writedValue);
                 }
                 else{
-                    $point = [];
+                    $momentData = [];
                 }
             }
-            array_push($channelData, $point);
+            array_push($channelData, $momentData);
         }
             
         fclose($fileHandler);
