@@ -72,7 +72,7 @@ $(document).ready(function () {
         var dateArr = date.split('-');
         var dataArh_path = workDir_path + '/' + dateArr[0] + '/' + dateArr[2] + dateArr[1] + '.arh';
         anychart.exports.filename(techZone + ' ' + $('#display option:selected').text() + ' ' + date);
-        updatePlot(plot, activeChannels, dataArh_path, channels)
+        updateDayPlot(plot, activeChannels, dataArh_path, channels)
             .then(() => {
                 $(".controlItem").prop("disabled", false);
                 preloader.visible(false);

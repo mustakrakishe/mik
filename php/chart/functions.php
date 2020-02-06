@@ -116,10 +116,7 @@
             $lastPointNum = $file_pointCount;
         }
 
-        
-        //$date = str_split(basename($path, ".arh"), 2);
         $date = strtotime(date('Y-m-d', filemtime($path)-1).' 00:00:00');
-        //date_date_set()
 
         fseek($fileHandler, $bytesPerServiceData);
         for ($pointNum = $firstPointNum; $pointNum <= $lastPointNum; $pointNum++){

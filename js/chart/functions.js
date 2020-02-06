@@ -80,13 +80,15 @@ function selectChannels(channels) {
     })
 };
 
-function getChannelData(channels, path) {
+function parseArhFile(path, channels, timeB, timeE) {
     return new Promise(resolve => {
         $.ajax({
-            url: "../php/chart/getChannelData.php",
+            url: "../php/chart/parseArhFile.php",
             data: {
+                path: path,
                 channels: channels,
-                path: path
+                timeB: timeB,
+                timeE: timeE
             },
             type: "GET",
             dataType: "json"
@@ -120,7 +122,7 @@ function getChannelsInfo(channels, activeChannels) {
     return channelsInfo;
 }
 
-function updatePlot(plot, channelList, channelData_path, channels){
+function updateDayPlot(plot, channelList, channelData_path, channels){
     return new Promise(resolve => {
         var channelList_old = [];
         for (var seriesNum = 0; seriesNum < plot.getSeriesCount(); seriesNum++){
@@ -145,7 +147,9 @@ function updatePlot(plot, channelList, channelData_path, channels){
         
         if(channelsToAdd.length){
             var channelsInfo = getChannelsInfo(channels, channelsToAdd);
-            getChannelData(channelsToAdd, channelData_path)
+            timeB = 0;
+            timeE = 86399;
+            parseArhFile(channelData_path, channelsToAdd, timeB, timeE)
             .then(channelData => { 
                 addSeries(plot, channelData, channelsInfo);
             })
