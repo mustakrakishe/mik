@@ -80,15 +80,17 @@ function selectChannels(channels) {
     })
 };
 
-function parseArhFile(path, channels, timeB, timeE) {
+function parseArhFile(path, channels, firstSecond, lastSecond) {
     return new Promise(resolve => {
+        console.log('firstSecond: ' + firstSecond);
+        console.log('lastSecond: ' + lastSecond);
         $.ajax({
             url: "../php/chart/parseArhFile.php",
             data: {
                 path: path,
                 channels: channels,
-                timeB: timeB,
-                timeE: timeE
+                firstSecond: firstSecond,
+                lastSecond: lastSecond
             },
             type: "GET",
             dataType: "json"
@@ -147,9 +149,9 @@ function updateDayPlot(plot, channelList, channelData_path, channels){
         
         if(channelsToAdd.length){
             var channelsInfo = getChannelsInfo(channels, channelsToAdd);
-            timeB = 0;
-            timeE = 86399;
-            parseArhFile(channelData_path, channelsToAdd, timeB, timeE)
+            var firstSecond = 0;
+            var lastSecond = 86399;
+            parseArhFile(channelData_path, channelsToAdd, firstSecond, lastSecond)
             .then(channelData => { 
                 addSeries(plot, channelData, channelsInfo);
             })

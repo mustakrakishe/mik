@@ -14,6 +14,7 @@ $(document).ready(function () {
     chart.crosshair().xLabel(false);
     chart.crosshair().yLabel(false);
     chart.margin(-5, -25, -35, -15);
+    //chart.tooltip().titleFormat('{%x}{type:date}'); 
 
     chart.contextMenu().itemsFormatter(function(items){
        delete items["save-data-as"];

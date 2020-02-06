@@ -91,7 +91,7 @@
         return $displays;
     }
 
-    function parseArhFile($path, $channelIds, $timeB, $timeE){
+    function parseArhFile($path, $channelIds, $firstSecond, $lastSecond){
         $channelData = [];
 
         $SECONDS_PER_DAY = 86400; //60s*60m*24h
@@ -106,12 +106,12 @@
         $fileHandler = fopen($path, 'rb');
         $file_channelCount = unpack('S*', fread($fileHandler, $BYTES_PER_CHANNEL_COUNT), 0)[1];
         $bytesPerServiceData = $BYTES_PER_CHANNEL_COUNT + $BYTES_PER_DATE + $BYTES_PER_CONF * $file_channelCount;
-        $file_pointCount = (filesize($path) - $bytesPerServiceData)/($BYTES_PER_VALUE * $file_channelCount)-1;  //-1 потому, что в ddmm.arh последняя точка имеет время 24:00:00
+        $file_pointCount = (filesize($path) - $bytesPerServiceData)/($BYTES_PER_VALUE * $file_channelCount)-1;  //-1 потому, что в ddmm.arh Value(t=24:00:00)=11111
         $file_pointTimeStep = $SECONDS_PER_DAY/$file_pointCount;
         $bytesPerOneTimePoints = $BYTES_PER_VALUE*$file_channelCount;
 
-        $firstPointNum = floor(($timeB - mktime(0, 0, 0))/$file_pointTimeStep);
-        $lastPointNum = ceil(($timeE - mktime(0, 0, 0))/$file_pointTimeStep);
+        $firstPointNum = floor($firstSecond/$file_pointTimeStep);
+        $lastPointNum = ceil($lastSecond/$file_pointTimeStep);
         if ($lastPointNum > $file_pointCount){
             $lastPointNum = $file_pointCount;
         }
