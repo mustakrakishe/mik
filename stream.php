@@ -58,10 +58,10 @@
     <select id="channels" name="channels" class="controlItem" multiple></select>
 </div>
 <div id="tab-paths" class="content-wrap tab">
-    <p>ddmm.arh</p><input type="text" name="ddmmArh_path" id="ddmmArh_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\0302.arh">
+    <p>ddmm.arh</p><input type="text" name="ddmmArh_path" id="ddmmArh_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\0602.arh">
     <p>display.dat</p><input type="text" name="displayDat_path" id="displayDat_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\display.dat">
     <p>chanel.bas</p><input type="text" name="chanelBas_path" id="chanelBas_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\chanel.bas">
-    <button onclick="update()">Обновить</button>
+    <button onclick="updateStartData()">Обновить</button>
 </div>
 
 <div id="side-bar">
@@ -71,7 +71,7 @@
 
 
 <script>
-var plot;
+    var plot;
     $(document).ready(function (){
         anychart.exports.server("http://localhost:2000");
         anychart.format.inputLocale('ru-ru');
@@ -123,7 +123,10 @@ var plot;
 
         preloader = anychart.ui.preloader();
         preloader.render(document.getElementById("chart"));
-        update(plot);
+        updateStartData();
+
+        //Отображение существующих данных
+        
 
         
         /*Отображение боковой панели*/
@@ -164,7 +167,8 @@ var plot;
     });
     
     //Загрузка существующих данных
-    function update(){
+    function updateStartData(){
+        plot.removeAllSeries();
         var channelBas_path = $('#chanelBas_path').val();
         var displayDat_path = $('#displayDat_path').val();
         var channels = getChannels(channelBas_path);
@@ -179,35 +183,12 @@ var plot;
 
         preloader.visible(true);
         $(".controlItem").prop("disabled", true);
-
-        updatePlot(plot, activeChannels, dataArh_path, channels)
+        updateDayPlot(plot, activeChannels, dataArh_path, channels)
             .then(() => {
                 $(".controlItem").prop("disabled", false);
                 preloader.visible(false);
             })
     }
-
-    function lastPoint()
-
-    function startStream() {
-        setInterval(
-            function() {
-                dataSet.append({
-                    x: "P" + indexSetter,
-                    value : Math.floor((Math.random() * 500)+ 1)
-                });
-                dataSet.remove(0);
-                indexSetter++;
-            }, 200
-        )};
-        streamButton.onclick = function() {
-            clearInterval(myVar);
-            streamButton.onclick = function () {
-                startStream();
-            };
-            streamButton.innerHTML = "Start" + "\nstream";
-        };
-    };
 </script>
 
 

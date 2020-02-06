@@ -82,8 +82,6 @@ function selectChannels(channels) {
 
 function parseArhFile(path, channels, firstSecond, lastSecond) {
     return new Promise(resolve => {
-        console.log('firstSecond: ' + firstSecond);
-        console.log('lastSecond: ' + lastSecond);
         $.ajax({
             url: "../php/chart/parseArhFile.php",
             data: {

@@ -138,4 +138,8 @@
         fclose($fileHandler);
         return $channelData;
     }
+
+    function getFileLastModDate($path){
+        return filemtime($path);
+    }
 ?>
