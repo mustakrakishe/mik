@@ -7,12 +7,9 @@
     //header('location: chart.php');
 
     require 'php/chart/functions.php';
-    $path = 'D:/documents/task/task2018_web_interface/page/current/data/O11/2018-05-11/2018/1105.arh';
-    $chanelIds = [0, 1, 3];
-    $firstSec = 0;
-    $lastSec = 15;
-    $data = parseArhFile($path, $chanelIds, $firstSec, $lastSec);
-    print_r($data);
+    $path = 'C:/Program Files (x86)/Microl/Mик-Регистратор/0702.arh';
+    $data = parseArhFile($path, [1], 0, 86400);
+    echo count($data) + ' точек';
 ?>
 
 <?php require 'php/common/foot.php'; ?>

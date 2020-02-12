@@ -128,11 +128,13 @@
                     $writedValue = round($readedValue, 3);
                     array_push($momentData, $writedValue);
                 }
-                else{
+                /*else{
                     $momentData = [];
-                }
+                }*/
             }
-            array_push($channelData, $momentData);
+            if(count($momentData) > 1){
+                array_push($channelData, $momentData);
+            }
         }
             
         fclose($fileHandler);

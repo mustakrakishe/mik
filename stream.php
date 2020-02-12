@@ -58,7 +58,7 @@
     <select id="channels" name="channels" class="controlItem" multiple></select>
 </div>
 <div id="tab-paths" class="content-wrap tab">
-    <p>ddmm.arh</p><input type="text" name="ddmmArh_path" id="ddmmArh_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\0602.arh">
+    <p>ddmm.arh</p><input type="text" name="ddmmArh_path" id="ddmmArh_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\<?php echo date('dm') ?>.arh">
     <p>display.dat</p><input type="text" name="displayDat_path" id="displayDat_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\display.dat">
     <p>chanel.bas</p><input type="text" name="chanelBas_path" id="chanelBas_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\chanel.bas">
     <button onclick="updateStartData()">Обновить</button>
@@ -123,12 +123,28 @@
 
         preloader = anychart.ui.preloader();
         preloader.render(document.getElementById("chart"));
-        updateStartData();
 
-        //Отображение существующих данных
+        updateStartData()
+        .then(([fileLastModDate, dataArh_path, activeChannels]) => {
+            setInterval(function(){
+                var fileLastModDate_new = getFileLastModDate(dataArh_path);
+                if(fileLastModDate_new > fileLastModDate){
+                    var fileLastModDate_obj = new Date(fileLastModDate*1000);
+                    var fileLastModDate_new_obj = new Date(fileLastModDate_new*1000);
+                    var fistSecond = fileLastModDate_obj.getHours() * 3600 + fileLastModDate_obj.getMinutes() * 60 + fileLastModDate_obj.getSeconds() + 1;
+                    var lastSecond = fileLastModDate_new_obj.getHours() * 3600 + fileLastModDate_new_obj.getMinutes() * 60 + fileLastModDate_new_obj.getSeconds() + 1;
+                    parseArhFile(dataArh_path, activeChannels, fistSecond, lastSecond)
+                    .then(newData => {
+                        console.log('Новые данные: ' + newData);
+                        fileLastModDate = fileLastModDate_new;
+                    })
+                }
+            }, 2000);
+        })
+        
+        
         
 
-        
         /*Отображение боковой панели*/
         $('.shortcut').click(function(){
             var activatedShortcutId = this.getAttribute('id');
@@ -168,26 +184,55 @@
     
     //Загрузка существующих данных
     function updateStartData(){
-        plot.removeAllSeries();
-        var channelBas_path = $('#chanelBas_path').val();
-        var displayDat_path = $('#displayDat_path').val();
-        var channels = getChannels(channelBas_path);
-        var displays = getDisplays(displayDat_path);
-        fillTheSelect($('#channels'), channels);
-        fillTheSelect($('#display'), displays);
-        var activeDisplay = $('#display option:selected').val();
-        var activeChannels = displays[activeDisplay].channels;
-        selectChannels(activeChannels);
+        return new Promise(resolve => {
+            plot.removeAllSeries();
+            var channelBas_path = $('#chanelBas_path').val();
+            var displayDat_path = $('#displayDat_path').val();
+            var channels = getChannels(channelBas_path);
+            var displays = getDisplays(displayDat_path);
+            fillTheSelect($('#channels'), channels);
+            fillTheSelect($('#display'), displays);
+            var activeDisplay = $('#display option:selected').val();
+            var activeChannels = displays[activeDisplay].channels;
+            selectChannels(activeChannels);
 
-        var dataArh_path = $('#ddmmArh_path').val();
+            dataArh_path = $('#ddmmArh_path').val();
+            fileLastModDate = getFileLastModDate(dataArh_path);
 
-        preloader.visible(true);
-        $(".controlItem").prop("disabled", true);
-        updateDayPlot(plot, activeChannels, dataArh_path, channels)
+            preloader.visible(true);
+            $(".controlItem").prop("disabled", true);
+            updateDayPlot(plot, activeChannels, dataArh_path, channels)
             .then(() => {
                 $(".controlItem").prop("disabled", false);
                 preloader.visible(false);
+                resolve([fileLastModDate, dataArh_path, activeChannels]);
             })
+        })
+    }
+
+    function getFileLastModDate(path){
+        var fileLastModDate = '';
+        $.ajax({
+            url: "../php/chart/getFileLastModDate.php",
+            data: {
+                path: path
+            },
+            type: "GET",
+            dataType: "json",
+            async: false
+        })
+        .done(function (response) {
+            fileLastModDate = response;
+        })
+        .fail(function (xhr, status, errorThrown) {
+            alert(
+                'Ошибка запроса даты последней модификации файла ' + path + '.\n'
+                + "Error: " + errorThrown + '\n'
+                + "Status: " + status + '\n'
+                + xhr
+            );
+        });
+        return fileLastModDate;
     }
 </script>
 
