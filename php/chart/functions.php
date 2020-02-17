@@ -116,11 +116,13 @@
             $lastPointNum = $file_pointCount;
         }
 
+        date_default_timezone_set('Europe/Kiev');
         $date = strtotime(date('Y-m-d', filemtime($path)-1).' 00:00:00');
 
         fseek($fileHandler, $bytesPerServiceData);
         for ($pointNum = $firstPointNum; $pointNum <= $lastPointNum; $pointNum++){
             $momentData = [($date + $file_pointTimeStep * $pointNum)*1000];
+            
             foreach($channelIds as $channelNum => $channelId){
                 fseek($fileHandler, $bytesPerServiceData + $bytesPerOneTimePoints * $pointNum + $BYTES_PER_VALUE * $channelId);
                 $readedValue = unpack('f*', fread($fileHandler, $BYTES_PER_VALUE), SEEK_SET)[1];

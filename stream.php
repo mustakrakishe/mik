@@ -61,7 +61,7 @@
     <p>ddmm.arh</p><input type="text" name="ddmmArh_path" id="ddmmArh_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\<?php echo date('dm') ?>.arh">
     <p>display.dat</p><input type="text" name="displayDat_path" id="displayDat_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\display.dat">
     <p>chanel.bas</p><input type="text" name="chanelBas_path" id="chanelBas_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\chanel.bas">
-    <button onclick="updateStartData()">Обновить</button>
+    <input type="button" id='updateBtn' value="Обновить">
 </div>
 
 <div id="side-bar">
@@ -71,17 +71,111 @@
 
 
 <script>
-    var plot;
     $(document).ready(function (){
+        var plot = initializeChart('chart').plot();
+
+        var channelBas_path = $('#chanelBas_path').val();
+        var displayDat_path = $('#displayDat_path').val();
+        var dataArh_path = $('#ddmmArh_path').val();
+
+        var channels = getChannels(channelBas_path);
+        var displays = getDisplays(displayDat_path);
+        fillTheSelect($('#channels'), channels);
+        fillTheSelect($('#display'), displays);
+
+        var activeDisplay = $('#display option:selected').val();
+        var activeChannels = displays[activeDisplay].channels;
+        selectChannels(activeChannels);
+        var channelsInfo = getChannelsInfo(channels, activeChannels);
+        
+        preloader.visible(true);
+        $(".controlItem").prop("disabled", true);
+        
+        parseArhFile(dataArh_path, activeChannels, 0, 86400)
+        .then(channelData => {
+            addSeries(plot, channelData, channelsInfo);
+            $(".controlItem").prop("disabled", false);
+            preloader.visible(false);
+
+            var lastAddedPointTime = channelData[channelData.length - 1][0]; //php возвращает timestamp в "с", а js работает с timestamp в "мс"
+            
+            setInterval(function(){
+                getFileLastModDate(dataArh_path)
+                .then(fileLastModDate => {
+                    fileLastModDate = fileLastModDate*1000;
+
+                    if(fileLastModDate > lastAddedPointTime){
+                        var lastAddedPointTime_obj = new Date(lastAddedPointTime);
+                        var fileLastModDate_obj = new Date(fileLastModDate);
+                        var fistSecond = lastAddedPointTime_obj.getHours() * 3600 + lastAddedPointTime_obj.getMinutes() * 60 + lastAddedPointTime_obj.getSeconds() + 1;
+                        var lastSecond = fileLastModDate_obj.getHours() * 3600 + fileLastModDate_obj.getMinutes() * 60 + fileLastModDate_obj.getSeconds();
+                        
+                        parseArhFile(dataArh_path, activeChannels, fistSecond, lastSecond)
+                        .then(newData => {
+                            console.log('Новые данные: ' + newData);
+                            lastAddedPointTime = newData ? newData[newData.length - 1][0] : lastAddedPointTime;
+                        })
+                    }
+                })
+            
+
+            }, 2000);
+        });
+        
+        
+        
+
+        /*Отображение боковой панели*/
+        $('.shortcut').click(function(){
+            var activatedShortcutId = this.getAttribute('id');
+            var activatedTabId = activatedShortcutId.replace('shortcut-', 'tab-');
+
+            var activatedShortcut = this;
+            var activatedTab = $('#' + activatedTabId);
+
+            //Если была неактивна
+            if($(activatedTab).css('display') == 'none'){
+
+                var openedTab = $('.tab').filter(function(){ 
+                    return this.style.display == 'block';
+                });
+
+                if(openedTab.length){
+                    var openedTabId = $(openedTab).attr('id');
+                    var activeShortcutId = openedTabId.replace('tab-', 'shortcut-');
+                    
+                    var activeShortcut = $('#' + activeShortcutId);
+                    $(openedTab).css('display', 'none');
+                    activeShortcut.css('background-color', '');
+                }
+
+                $(activatedShortcut).css('background-color', 'rgb(77, 77, 77)');
+                $(activatedTab).css('display', 'block');
+                $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');
+            }
+            //Если была активна
+            else{
+                $(this).css('background-color', '');
+                activatedTab.css('display', 'none');
+                $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
+            }
+        });
+
+        $('#updateBtn').click(() => {
+            updateStartData(plot);
+        })
+    });
+
+    function initializeChart(containerId){
         anychart.exports.server("http://localhost:2000");
         anychart.format.inputLocale('ru-ru');
         anychart.format.outputLocale('ru-ru');
 
         //create chart
         var chart = anychart.stock();
-        plot = chart.plot();
+        var plot = chart.plot();
 
-        chart.container('chart');
+        chart.container(containerId);
         chart.scroller(false);
         chart.interactivity().zoomOnMouseWheel(true);
         chart.crosshair().xLabel(false);
@@ -122,117 +216,33 @@
         chart.draw();
 
         preloader = anychart.ui.preloader();
-        preloader.render(document.getElementById("chart"));
+        preloader.render(document.getElementById(containerId));
 
-        updateStartData()
-        .then(([fileLastModDate, dataArh_path, activeChannels]) => {
-            setInterval(function(){
-                var fileLastModDate_new = getFileLastModDate(dataArh_path);
-                if(fileLastModDate_new > fileLastModDate){
-                    var fileLastModDate_obj = new Date(fileLastModDate*1000);
-                    var fileLastModDate_new_obj = new Date(fileLastModDate_new*1000);
-                    var fistSecond = fileLastModDate_obj.getHours() * 3600 + fileLastModDate_obj.getMinutes() * 60 + fileLastModDate_obj.getSeconds() + 1;
-                    var lastSecond = fileLastModDate_new_obj.getHours() * 3600 + fileLastModDate_new_obj.getMinutes() * 60 + fileLastModDate_new_obj.getSeconds() + 1;
-                    parseArhFile(dataArh_path, activeChannels, fistSecond, lastSecond)
-                    .then(newData => {
-                        console.log('Новые данные: ' + newData);
-                        fileLastModDate = fileLastModDate_new;
-                    })
-                }
-            }, 2000);
-        })
-        
-        
-        
-
-        /*Отображение боковой панели*/
-        $('.shortcut').click(function(){
-            var activatedShortcutId = this.getAttribute('id');
-            var activatedTabId = activatedShortcutId.replace('shortcut-', 'tab-');
-
-            var activatedShortcut = this;
-            var activatedTab = $('#' + activatedTabId);
-
-            //Если была неактивна
-            if($(activatedTab).css('display') == 'none'){
-
-                var openedTab = $('.tab').filter(function(){ 
-                    return this.style.display == 'block';
-                });
-
-                if(openedTab.length){
-                    var openedTabId = $(openedTab).attr('id');
-                    var activeShortcutId = openedTabId.replace('tab-', 'shortcut-');
-                    
-                    var activeShortcut = $('#' + activeShortcutId);
-                    $(openedTab).css('display', 'none');
-                    activeShortcut.css('background-color', '');
-                }
-
-                $(activatedShortcut).css('background-color', 'rgb(77, 77, 77)');
-                $(activatedTab).css('display', 'block');
-                $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');
-            }
-            //Если была активна
-            else{
-                $(this).css('background-color', '');
-                activatedTab.css('display', 'none');
-                $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
-            }
-        });
-    });
-    
-    //Загрузка существующих данных
-    function updateStartData(){
-        return new Promise(resolve => {
-            plot.removeAllSeries();
-            var channelBas_path = $('#chanelBas_path').val();
-            var displayDat_path = $('#displayDat_path').val();
-            var channels = getChannels(channelBas_path);
-            var displays = getDisplays(displayDat_path);
-            fillTheSelect($('#channels'), channels);
-            fillTheSelect($('#display'), displays);
-            var activeDisplay = $('#display option:selected').val();
-            var activeChannels = displays[activeDisplay].channels;
-            selectChannels(activeChannels);
-
-            dataArh_path = $('#ddmmArh_path').val();
-            fileLastModDate = getFileLastModDate(dataArh_path);
-
-            preloader.visible(true);
-            $(".controlItem").prop("disabled", true);
-            updateDayPlot(plot, activeChannels, dataArh_path, channels)
-            .then(() => {
-                $(".controlItem").prop("disabled", false);
-                preloader.visible(false);
-                resolve([fileLastModDate, dataArh_path, activeChannels]);
-            })
-        })
+        return chart;
     }
 
     function getFileLastModDate(path){
-        var fileLastModDate = '';
-        $.ajax({
-            url: "../php/chart/getFileLastModDate.php",
-            data: {
-                path: path
-            },
-            type: "GET",
-            dataType: "json",
-            async: false
+        return new Promise(resolve => {
+            $.ajax({
+                url: "../php/chart/getFileLastModDate.php",
+                data: {
+                    path: path
+                },
+                type: "GET",
+                dataType: "json"
+            })
+            .done(function (fileLastModDate) {
+                resolve (fileLastModDate);
+            })
+            .fail(function (xhr, status, errorThrown) {
+                alert(
+                    'Ошибка запроса даты последней модификации файла ' + path + '.\n'
+                    + "Error: " + errorThrown + '\n'
+                    + "Status: " + status + '\n'
+                    + xhr
+                );
+            });
         })
-        .done(function (response) {
-            fileLastModDate = response;
-        })
-        .fail(function (xhr, status, errorThrown) {
-            alert(
-                'Ошибка запроса даты последней модификации файла ' + path + '.\n'
-                + "Error: " + errorThrown + '\n'
-                + "Status: " + status + '\n'
-                + xhr
-            );
-        });
-        return fileLastModDate;
     }
 </script>
 

@@ -167,12 +167,9 @@ function addSeries(chart, seriesData, seriesInfo) {
     return new Promise(resolve => {
         var dataTable = anychart.data.table(0, 0, 2);
         dataTable.addData(seriesData);
-        //console.log('Последние данные в dataTable: ' + dataTable.data);
 
         seriesInfo.forEach(function(serieInfo, serieNum){
             var mapping = dataTable.mapAs({ value: serieNum + 1 });
-            
-            console.log('Последние данные в mapping: ' + mapping[mapping.x]);
             var serie = chart.line(mapping);
             serie.name(serieInfo.name).id(serieInfo.id);
 
