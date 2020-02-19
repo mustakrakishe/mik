@@ -130,9 +130,6 @@
                     $writedValue = round($readedValue, 3);
                     array_push($momentData, $writedValue);
                 }
-                /*else{
-                    $momentData = [];
-                }*/
             }
             if(count($momentData) > 1){
                 array_push($channelData, $momentData);
@@ -140,7 +137,7 @@
         }
             
         fclose($fileHandler);
-        return $channelData;
+        return $channelData ?: false;
     }
 
     function getFileLastModDate($path){

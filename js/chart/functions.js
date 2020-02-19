@@ -165,12 +165,14 @@ function updateDayPlot(plot, channelList, channelData_path, channels){
 
 function addSeries(chart, seriesData, seriesInfo) {
     return new Promise(resolve => {
+        var mappings = [];
         var dataTable = anychart.data.table(0, 0, 2);
         dataTable.addData(seriesData);
 
         seriesInfo.forEach(function(serieInfo, serieNum){
             var mapping = dataTable.mapAs({ value: serieNum + 1 });
             var serie = chart.line(mapping);
+            mappings[serieNum] = mapping;
             serie.name(serieInfo.name).id(serieInfo.id);
 
             var yScale = anychart.scales.linear();
@@ -190,7 +192,7 @@ function addSeries(chart, seriesData, seriesInfo) {
             serie.tooltip().format("{%seriesName}: {%value} " + serieInfo.units);
         })
 
-        resolve();
+        resolve(mappings);
     })
 }
 
