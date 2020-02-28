@@ -63,6 +63,8 @@
     <p>chanel.bas</p><input type="text" name="chanelBas_path" id="chanelBas_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\chanel.bas">
     <p>Отображаемый интервал</p><input type="text" name="displayedInterval" id="displayedInterval" value="15">
     <input type="button" id='updateBtn' value="Обновить">
+    <!--<input type="button" id='streamButton' value="">-->
+    <button id="streamButton" onclick="">Остановить стрим</button>
 </div>
 
 <div id="side-bar">
@@ -75,129 +77,7 @@
     $(document).ready(function (){
         var containerId = 'chart';
         var displayedInterval = $('#displayedInterval').val();
-        var plot = initializeChart(containerId, displayedInterval).plot();
-
-        var channelBas_path = $('#chanelBas_path').val();
-        var displayDat_path = $('#displayDat_path').val();
-        var dataArh_path = $('#ddmmArh_path').val();
-
-        var channels = getChannels(channelBas_path);
-        var displays = getDisplays(displayDat_path);
-        fillTheSelect($('#channels'), channels);
-        fillTheSelect($('#display'), displays);
-
-        var activeDisplay = $('#display option:selected').val();
-        var activeChannels = displays[activeDisplay].channels;
-        selectChannels(activeChannels);
-        var channelsInfo = getChannelsInfo(channels, activeChannels);
         
-        preloader.visible(true);
-        $(".controlItem").prop("disabled", true);
-
-        var today = new Date();
-        var lastSecond = today.getHours()*3600 + today.getMinutes()*60 + today.getSeconds();
-        var firstSecond = lastSecond - displayedInterval + 1;
-        
-        parseArhFile(dataArh_path, activeChannels, firstSecond, lastSecond)
-        .then(channelData => {
-            if (channelData){
-                addSeries(plot, channelData, channelsInfo)
-                .then(dataTable => {
-                    $(".controlItem").prop("disabled", false);
-                    preloader.visible(false);
-
-                    var lastAddedPointTime = channelData[channelData.length - 1][0]; //php возвращает timestamp в "с", а js работает с timestamp в "мс"
-                ///
-                setInterval(function(){
-                    getFileLastModDate(dataArh_path)
-                    .then(fileLastModDate => {
-                        fileLastModDate = fileLastModDate*1000;
-
-                        if(fileLastModDate > lastAddedPointTime){
-                            var lastAddedPointTime_obj = new Date(lastAddedPointTime);
-                            var fileLastModDate_obj = new Date(fileLastModDate);
-                            var fistSecond = lastAddedPointTime_obj.getHours() * 3600 + lastAddedPointTime_obj.getMinutes() * 60 + lastAddedPointTime_obj.getSeconds() + 1;
-                            var lastSecond = fileLastModDate_obj.getHours() * 3600 + fileLastModDate_obj.getMinutes() * 60 + fileLastModDate_obj.getSeconds();
-                            
-                            parseArhFile(dataArh_path, activeChannels, fistSecond, lastSecond)
-                            .then(newData => {
-                                if(newData){
-                                    console.log('new data: ' + newData);
-                                    dataTable.addData(newData);
-                                    dataTable.removeFirst(newData.length);
-                                }
-                                
-                                /*newData.forEach(momentData =>{
-                                    dataTable.addData([momentData]);
-                                    dataTable.removeFirst(1);
-
-                                })*/
-
-                                lastAddedPointTime = newData ? newData[newData.length - 1][0] : lastAddedPointTime;
-                            })
-                        }
-                    })
-            
-
-            }, 500);
-                ///
-                })
-            }
-            else{
-                //var lastAddedPointTime = fileLastModDate;
-                //Доработай проверку существования файлов .arh, .dat, .bas
-            }
-             
-            
-            
-            
-        });
-        
-        
-        
-
-        /*Отображение боковой панели*/
-        $('.shortcut').click(function(){
-            var activatedShortcutId = this.getAttribute('id');
-            var activatedTabId = activatedShortcutId.replace('shortcut-', 'tab-');
-
-            var activatedShortcut = this;
-            var activatedTab = $('#' + activatedTabId);
-
-            //Если была неактивна
-            if($(activatedTab).css('display') == 'none'){
-
-                var openedTab = $('.tab').filter(function(){ 
-                    return this.style.display == 'block';
-                });
-
-                if(openedTab.length){
-                    var openedTabId = $(openedTab).attr('id');
-                    var activeShortcutId = openedTabId.replace('tab-', 'shortcut-');
-                    
-                    var activeShortcut = $('#' + activeShortcutId);
-                    $(openedTab).css('display', 'none');
-                    activeShortcut.css('background-color', '');
-                }
-
-                $(activatedShortcut).css('background-color', 'rgb(77, 77, 77)');
-                $(activatedTab).css('display', 'block');
-                $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');
-            }
-            //Если была активна
-            else{
-                $(this).css('background-color', '');
-                activatedTab.css('display', 'none');
-                $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
-            }
-        });
-
-        $('#updateBtn').click(() => {
-            updateStartData(plot);
-        })
-    });
-
-    function initializeChart(containerId, displayedInterval){
         anychart.exports.server("http://localhost:2000");
         anychart.format.inputLocale('ru-ru');
         anychart.format.outputLocale('ru-ru');
@@ -246,11 +126,137 @@
 
         chart.draw();
 
+        var dataTable = anychart.data.table(0, 0, 2);
+
         preloader = anychart.ui.preloader();
         preloader.render(document.getElementById(containerId));
 
-        return chart;
-    }
+        var channelBas_path = $('#chanelBas_path').val();
+        var displayDat_path = $('#displayDat_path').val();
+        var dataArh_path = $('#ddmmArh_path').val();
+
+        var channels = getChannels(channelBas_path);
+        var displays = getDisplays(displayDat_path);
+        fillTheSelect($('#channels'), channels);
+        fillTheSelect($('#display'), displays);
+
+        var activeDisplay = $('#display option:selected').val();
+        var activeChannels = displays[activeDisplay].channels;
+        selectChannels(activeChannels);
+        var channelsProp = getChannelsProp(channels, activeChannels);
+        
+        preloader.visible(true);
+        $(".controlItem").prop("disabled", true);
+
+        var today = new Date();
+        var lastSecond = today.getHours()*3600 + today.getMinutes()*60 + today.getSeconds();
+        var firstSecond = lastSecond - displayedInterval + 1;
+        
+        parseArhFile(dataArh_path, activeChannels, firstSecond, lastSecond)
+        .then(channelData => {
+            if (channelData){
+                dataTable.addData(channelData);
+                addSeries(plot, dataTable, channelsProp)
+                .then(() => {
+                    $(".controlItem").prop("disabled", false);
+                    preloader.visible(false);
+
+                    var lastAddedPointTime = channelData[channelData.length - 1][0]; //php возвращает timestamp в "с", а js работает с timestamp в "мс"
+                    var streamTimer = startStream(dataArh_path, dataTable, lastAddedPointTime);
+                })
+            }
+            else{
+                //var lastAddedPointTime = fileLastModDate;
+                //Доработай проверку существования файлов .arh, .dat, .bas
+                console.log('Шось не то');
+            }
+             
+            
+            
+            
+        });
+        
+        function startStream(dataArh_path, dataTable, lastAddedPointTime){
+            var streamButton = document.getElementById("streamButton"); //мне нужно менять функцию на кнопке, а
+            streamButton.innerHTML = "Остановить стрим";
+
+            var streamTimer = setInterval(function(){
+                getFileLastModDate(dataArh_path)
+                .then(fileLastModDate => {
+                    fileLastModDate = fileLastModDate*1000;
+
+                    if(fileLastModDate > lastAddedPointTime){
+                        var lastAddedPointTime_obj = new Date(lastAddedPointTime);
+                        var fileLastModDate_obj = new Date(fileLastModDate);
+                        var fistSecond = lastAddedPointTime_obj.getHours() * 3600 + lastAddedPointTime_obj.getMinutes() * 60 + lastAddedPointTime_obj.getSeconds() + 1;
+                        var lastSecond = fileLastModDate_obj.getHours() * 3600 + fileLastModDate_obj.getMinutes() * 60 + fileLastModDate_obj.getSeconds();
+                        
+                        
+
+                        parseArhFile(dataArh_path, activeChannels, fistSecond, lastSecond)
+                        .then(newData => {
+                            if(newData){
+                                console.log('new data: ' + newData);
+                                dataTable.addData(newData);
+                                dataTable.removeFirst(newData.length);
+                            };
+
+                            lastAddedPointTime = newData ? newData[newData.length - 1][0] : lastAddedPointTime;
+                        });
+                    };
+                });
+            }, 500);
+
+            streamButton.onclick = function(){
+                clearInterval(streamTimer);
+                streamButton.innerHTML = "Начать стрим";
+                streamButton.onclick = function() {
+                    startStream(dataArh_path, dataTable, lastAddedPointTime);
+                };
+            };
+        };
+        
+
+        /*Отображение боковой панели*/
+        $('.shortcut').click(function(){
+            var activatedShortcutId = this.getAttribute('id');
+            var activatedTabId = activatedShortcutId.replace('shortcut-', 'tab-');
+
+            var activatedShortcut = this;
+            var activatedTab = $('#' + activatedTabId);
+
+            //Если была неактивна
+            if($(activatedTab).css('display') == 'none'){
+
+                var openedTab = $('.tab').filter(function(){ 
+                    return this.style.display == 'block';
+                });
+
+                if(openedTab.length){
+                    var openedTabId = $(openedTab).attr('id');
+                    var activeShortcutId = openedTabId.replace('tab-', 'shortcut-');
+                    
+                    var activeShortcut = $('#' + activeShortcutId);
+                    $(openedTab).css('display', 'none');
+                    activeShortcut.css('background-color', '');
+                }
+
+                $(activatedShortcut).css('background-color', 'rgb(77, 77, 77)');
+                $(activatedTab).css('display', 'block');
+                $('#mainContent-wrap').css('width', 'calc(100% - 300px - 25px - 5px)');
+            }
+            //Если была активна
+            else{
+                $(this).css('background-color', '');
+                activatedTab.css('display', 'none');
+                $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
+            }
+        });
+
+        $('#updateBtn').click(() => {
+            //updateStartData(plot);
+        })
+    });
 
     function getFileLastModDate(path){
         return new Promise(resolve => {
@@ -276,35 +282,35 @@
         })
     }
 
-    function addSeries(chart, seriesData, seriesInfo) {
+    function addSeries(chart, dataTable, seriesProp) {
     return new Promise(resolve => {
-        var dataTable = anychart.data.table(0, 0, 2);
-        dataTable.addData(seriesData);
-
-        seriesInfo.forEach(function(serieInfo, serieNum){
+        seriesProp.forEach(function(seriesProp, serieNum){
             var mapping = dataTable.mapAs({ value: serieNum + 1 });
             var serie = chart.line(mapping);
-            serie.name(serieInfo.name).id(serieInfo.id);
+            serie.name(seriesProp.name).id(seriesProp.id);
 
             var yScale = anychart.scales.linear();
-            yScale.minimum(serieInfo.scaleL);
-            yScale.maximum(serieInfo.scaleH);
+            yScale.minimum(seriesProp.scaleL);
+            yScale.maximum(seriesProp.scaleH);
 
             var yAxis = chart.yAxis(serieNum);
             yAxis.scale(yScale).labels().format(function(){
-                return (this.value/serieInfo.scaleH*100).toFixed() + '%';
+                return (this.value/seriesProp.scaleH*100).toFixed() + '%';
             });
             serie.yScale(yScale);
             
             chart.yAxis().labels(true);
             serie.yScale().ticks().count(6);
 
-            serie.legendItem().format("{%seriesName}: {%value} " + serieInfo.units);
-            serie.tooltip().format("{%seriesName}: {%value} " + serieInfo.units);
+            serie.legendItem().format("{%seriesName}: {%value} " + seriesProp.units);
+            serie.tooltip().format("{%seriesName}: {%value} " + seriesProp.units);
         })
 
-        resolve(dataTable);
+        resolve();
     })
+
+
+        
 }
 </script>
 

@@ -111,15 +111,15 @@ function parseArhFile(path, channels, firstSecond, lastSecond) {
     
 }
 
-function getChannelsInfo(channels, activeChannels) {
-    var channelsInfo = [];
-    activeChannels.forEach(function (channelNum) {
-        var channelInfo = channels[channelNum];
-        channelInfo['id'] = channelNum;
-        channelsInfo.push(channels[channelNum]);
+function getChannelsProp(channels, requiredChannelNumsArr) {
+    var channelsProp = [];
+    requiredChannelNumsArr.forEach(function (channelNum) {
+        var channelProp = channels[channelNum];
+        channelProp['id'] = channelNum;
+        channelsProp.push(channels[channelNum]);
     })
 
-    return channelsInfo;
+    return channelsProp;
 }
 
 function updateDayPlot(plot, channelList, channelData_path, channels){
