@@ -262,9 +262,7 @@
         return new Promise(resolve => {
             $.ajax({
                 url: "../php/chart/getFileLastModDate.php",
-                data: {
-                    path: path
-                },
+                data: {path: path},
                 type: "GET",
                 dataType: "json"
             })

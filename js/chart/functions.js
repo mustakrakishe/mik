@@ -146,7 +146,7 @@ function updateDayPlot(plot, channelList, channelData_path, channels){
         }
         
         if(channelsToAdd.length){
-            var channelsInfo = getChannelsInfo(channels, channelsToAdd);
+            var channelsInfo = getChannelsProp(channels, channelsToAdd);
             var firstSecond = 0;
             var lastSecond = 86399;
             parseArhFile(channelData_path, channelsToAdd, firstSecond, lastSecond)
