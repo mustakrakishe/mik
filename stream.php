@@ -61,9 +61,7 @@
     <p>ddmm.arh</p><input type="text" name="ddmmArh_path" id="ddmmArh_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\<?php echo date('dm') ?>.arh">
     <p>display.dat</p><input type="text" name="displayDat_path" id="displayDat_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\display.dat">
     <p>chanel.bas</p><input type="text" name="chanelBas_path" id="chanelBas_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\chanel.bas">
-    <p>Отображаемый интервал</p><input type="text" name="displayedInterval" id="displayedInterval" value="15">
-    <input type="button" id='updateBtn' value="Обновить">
-    <!--<input type="button" id='streamButton' value="">-->
+    <p>Отображаемый интервал</p><input type="text" name="displayedInterval" id="displayedInterval" value="60">
     <button id="streamButton" onclick="">Остановить стрим</button>
 </div>
 
@@ -177,8 +175,6 @@
         });
         
         function startStream(dataArh_path, dataTable, lastAddedPointTime){
-            var streamButton = document.getElementById("streamButton"); //мне нужно менять функцию на кнопке, а
-            streamButton.innerHTML = "Остановить стрим";
 
             var streamTimer = setInterval(function(){
                 getFileLastModDate(dataArh_path)
@@ -205,16 +201,20 @@
                         });
                     };
                 });
-            }, 500);
 
-            streamButton.onclick = function(){
-                clearInterval(streamTimer);
-                streamButton.innerHTML = "Начать стрим";
-                streamButton.onclick = function() {
-                    startStream(dataArh_path, dataTable, lastAddedPointTime);
-                };
-            };
+                $('#streamButton').on('click', function(){
+                    $(this).unbind('click').text('Начать стрим');
+                    clearInterval(streamTimer);
+
+                    
+                    $(this).on('click', function(){
+                        $(this).unbind('click').text('Остановить стрим');
+                        startStream(dataArh_path, dataTable, lastAddedPointTime);
+                    });
+                });
+            }, 500);
         };
+
         
 
         /*Отображение боковой панели*/
@@ -252,10 +252,6 @@
                 $('#mainContent-wrap').css('width', 'calc(100% - 25px - 5px)');
             }
         });
-
-        $('#updateBtn').click(() => {
-            //updateStartData(plot);
-        })
     });
 
     function getFileLastModDate(path){
