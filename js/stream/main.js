@@ -1,52 +1,15 @@
 $(document).ready(function (){
     var containerId = 'chart';
-    var displayedInterval = $('#displayedInterval').val();
+    var displayedPointsCount = $('#displayedInterval').val();
     
     anychart.exports.server("http://localhost:2000");
     anychart.format.inputLocale('ru-ru');
     anychart.format.outputLocale('ru-ru');
 
     //create chart
-    var chart = anychart.stock();
+    var chart = configChart(anychart.stock());
     var plot = chart.plot();
-
     chart.container(containerId);
-    chart.scroller(false);
-    chart.interactivity().zoomOnMouseWheel(true);
-    chart.crosshair().xLabel(false);
-    chart.crosshair().yLabel(false);
-    chart.margin(-5, -25, -35, -15);
-
-    chart.contextMenu().itemsFormatter(function(items){
-        delete items["save-data-as"];
-        delete items["share-with"];
-        delete items["exporting-separator"];
-        delete items["full-screen-enter"];
-        delete items["full-screen-separator"];
-        delete items["about"];
-        return items;
-    });
-    
-    plot.legend().fontColor('Black');
-    plot.legend().position('bottom');
-    plot.legend().itemsLayout("horizontal-expandable");
-    plot.legend().padding().top(35);
-    plot.legend().title(false);
-    plot.crosshair().yStroke(null);
-
-    plot.xMinorGrid(true);
-    plot.xAxis().minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}').fontColor('black');
-    plot.xAxis().labels(false);
-    plot.xAxis().background().enabled(true).stroke('none').fill('none');
-    plot.xAxis().background().topStroke('1 black');
-    chart.xScale().ticksCount(displayedInterval);
-    
-    plot.yMinorGrid(true);
-    plot.yAxis().labels().fontColor('black');
-    plot.yAxis().ticks(false);
-    plot.yAxis().stroke('black');
-    plot.yAxis().labels(false);
-
     chart.draw();
 
     var timeOffset = 0 - new Date().getTimezoneOffset() / 60;   //getTimezoneOffset() возвращает UTC - current = -2
@@ -74,11 +37,13 @@ $(document).ready(function (){
 
     var today = new Date();
     var lastSecond = today.getHours()*3600 + today.getMinutes()*60 + today.getSeconds();
-    var firstSecond = lastSecond - displayedInterval + 1;
+    var firstSecond = 0;//lastSecond - displayedPointsCount + 1;
+    if(firstSecond < 0) firstSecond = 0;
+    var channelData = [];
     
     parseArhFile(dataArh_path, activeChannels, firstSecond, lastSecond)
         .then(channelData => {
-            if (channelData){
+            if (channelData){     //ИСПРАВИТЬ! Если мало точек на момент запуска - вылетает в else
                 dataTable.addData(channelData);
                 addSeries(plot, dataTable, channelsProp)
                     .then(() => {
@@ -86,13 +51,13 @@ $(document).ready(function (){
                         preloader.visible(false);
 
                         var lastAddedPointTime = channelData[channelData.length - 1][0]; //php возвращает timestamp в "с", а js работает с timestamp в "мс"
-                        var streamTimer = startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime);
+                        // var streamTimer = startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime);
                     })
             }
             else{
                 //var lastAddedPointTime = fileLastModDate;
                 //ИСПРАВИТЬ! Доработай проверку существования файлов .arh, .dat, .bas
-                console.log('Шось не то');
+                console.log('Шось не то' + channelData);
                 preloader.visible(false);
             }
         });

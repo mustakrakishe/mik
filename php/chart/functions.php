@@ -130,6 +130,18 @@
                     $writedValue = round($readedValue, 3);
                     array_push($momentData, $writedValue);
                 }
+                ////////////////////////////////////////////
+                elseif(isset($channelData[count($channelData) - 1][$channelNum+1])){
+                    array_push($momentData, null);
+                }
+                ////////////////////////////////////////////
+                // if($readedValue != $EMPTY_VALUE_CODE){
+                //     $writedValue = round($readedValue, 3);
+                // }
+                // else{
+                //     $writingValue = null;
+                // }
+                // array_push($momentData, $writingValue);
             }
             if(count($momentData) > 1){
                 array_push($channelData, $momentData);

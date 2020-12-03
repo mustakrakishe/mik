@@ -6,9 +6,16 @@
 <?php
     //header('location: chart.php');
 
-    $a = [];
-    $a = $a ?: '1';
-    echo 'a = ' . $a;
+    include('php\chart\functions.php');
+    $path = 'C:/Program Files (x86)/Microl/Mик-Регистратор/0212.arh';
+    $channels = [19, 27];
+    $firstSecond = 0;
+    $lastSecond = 86400;
+
+    ini_set('memory_limit', '1000M');
+    
+    $data = parseArhFile($path, $channels, $firstSecond, $lastSecond);
+    var_dump($data);
 ?>
 
 <?php require 'php/common/foot.php'; ?>

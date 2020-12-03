@@ -107,8 +107,6 @@ function parseArhFile(path, channels, firstSecond, lastSecond) {
             );
         });
     })
-
-    
 }
 
 function getChannelsProp(channels, requiredChannelNumsArr) {

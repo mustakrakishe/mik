@@ -1,40 +1,51 @@
-function startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime){
+function configChart(chart){
+    chart.scroller(false);
+    chart.interactivity().zoomOnMouseWheel(true);
+    chart.crosshair().xLabel(false);
+    chart.crosshair().yLabel(false);
+    chart.margin(-5, -25, -35, -15);
 
-    var streamTimer = setInterval(function(){
-        getFileLastModDate(dataArh_path)
-        .then(fileLastModDate => {
-            fileLastModDate *= 1000;
+    chart.contextMenu().itemsFormatter(function(items){
+        delete items["save-data-as"];
+        delete items["share-with"];
+        delete items["exporting-separator"];
+        delete items["full-screen-enter"];
+        delete items["full-screen-separator"];
+        delete items["about"];
+        return items;
+    });
 
-            if(fileLastModDate > lastAddedPointTime){
-                var lastAddedPointTime_obj = new Date(lastAddedPointTime);
-                var fileLastModDate_obj = new Date(fileLastModDate);
-                var firstSecond = lastAddedPointTime_obj.getHours() * 3600 + lastAddedPointTime_obj.getMinutes() * 60 + lastAddedPointTime_obj.getSeconds() + 1;
-                var lastSecond = fileLastModDate_obj.getHours() * 3600 + fileLastModDate_obj.getMinutes() * 60 + fileLastModDate_obj.getSeconds();
-                
-                
+    var plot = chart.plot();
 
-                parseArhFile(dataArh_path, activeChannels, firstSecond, lastSecond)
-                    .then(newData => {
-                        if(newData){
-                            console.log('new data: ' + newData);
-                            dataTable.addData(newData);
-                            dataTable.removeFirst(newData.length);                      //ИСПРАВИТЬ! Если на момент запуска было только 3 точки, то график продолжает отображать 3 точки
-                            lastAddedPointTime = newData[newData.length - 1][0];
-                        };
-                    });
-            };
-        });
+    plot.legend().fontColor('Black');
+    plot.legend().position('bottom');
+    plot.legend().itemsLayout("horizontal-expandable");
+    plot.legend().padding().top(35);
+    plot.legend().title(false);
+    plot.crosshair().yStroke(null);
 
-        $('#streamButton').on('click', function(){
-            $(this).unbind('click').text('Начать стрим');
-            clearInterval(streamTimer);
-            
-            $(this).on('click', function(){
-                $(this).unbind('click').text('Остановить стрим');
-                startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime);
-            });
-        });
-    }, 500);
+    plot.xMinorGrid(true);
+    plot.xAxis().minorLabels().format('{%tickValue}{dateTimeFormat:HH:mm:ss}').fontColor('black');
+    plot.xAxis().labels(false);
+    plot.xAxis().background().enabled(true).stroke('none').fill('none');
+    plot.xAxis().background().topStroke('1 black');
+    chart.xScale().ticksCount(displayedInterval);
+    chart.xScale('scatter');
+
+    
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var tomorrow = today;
+    tomorrow.setDate(today.getDate() + 1);
+    chart.selectRange('2004-01-02 08:56:00','2004-01-15 08:58:00');
+    
+    plot.yMinorGrid(true);
+    plot.yAxis().labels().fontColor('black');
+    plot.yAxis().ticks(false);
+    plot.yAxis().stroke('black');
+    plot.yAxis().labels(false);
+
+    return chart;
 }
 
 function getFileLastModDate(path){
@@ -80,15 +91,58 @@ function addSeries(chart, dataTable, seriesProp) {
             serie.yScale().ticks().count(6);
 
             serie.legendItem().format("{%seriesName}: {%value} " + seriesProp.units);
-            serie.tooltip().format("{%seriesName}: {%value} " + seriesProp.units);
+            serie.tooltip().format(function(){
+                var value = this.value;
+                var data = 'н/д';
+                
+                if(value !== null){
+                    data = value + ' ' + seriesProp.units;
+                }
+
+                return this.seriesName + ': ' + data;
+            });
+
         })
 
         resolve();
     })
 }
 
-function configChart(chart){
-    
+function startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime){
 
-    return chart;
+    var streamTimer = setInterval(function(){
+        getFileLastModDate(dataArh_path)
+        .then(fileLastModDate => {
+            fileLastModDate *= 1000;
+
+            if(fileLastModDate > lastAddedPointTime){
+                var lastAddedPointTime_obj = new Date(lastAddedPointTime);
+                var fileLastModDate_obj = new Date(fileLastModDate);
+                var firstSecond = lastAddedPointTime_obj.getHours() * 3600 + lastAddedPointTime_obj.getMinutes() * 60 + lastAddedPointTime_obj.getSeconds() + 1;
+                var lastSecond = fileLastModDate_obj.getHours() * 3600 + fileLastModDate_obj.getMinutes() * 60 + fileLastModDate_obj.getSeconds();
+                
+                
+
+                parseArhFile(dataArh_path, activeChannels, firstSecond, lastSecond)
+                    .then(newData => {
+                        if(newData){
+                            console.log('new data: ' + newData);
+                            dataTable.addData(newData);
+                            dataTable.removeFirst(newData.length);                      //ИСПРАВИТЬ! Если на момент запуска было только 3 точки, то график продолжает отображать 3 точки
+                            lastAddedPointTime = newData[newData.length - 1][0];
+                        };
+                    });
+            };
+        });
+
+        $('#streamButton').on('click', function(){
+            $(this).unbind('click').text('Начать стрим');
+            clearInterval(streamTimer);
+            
+            $(this).on('click', function(){
+                $(this).unbind('click').text('Остановить стрим');
+                startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime);
+            });
+        });
+    }, 500);
 }

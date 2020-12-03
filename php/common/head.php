@@ -7,7 +7,7 @@
     </head>
     <body>
     <?php
-        // date_default_timezone_set('Europe/Kiev');
+        date_default_timezone_set('Europe/Kiev');
         mb_internal_encoding("UTF-8");
     ?>
 
