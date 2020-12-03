@@ -51,7 +51,7 @@ function configChart(chart){
 function getFileLastModDate(path){
     return new Promise(resolve => {
         $.ajax({
-            url: "../php/chart/getFileLastModDate.php",
+            url: "../php/chart/ajaxHandlers/getFileLastModDate.php",
             data: {path: path},
             type: "GET",
             dataType: "json"
@@ -145,4 +145,32 @@ function startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime
             });
         });
     }, 500);
+}
+
+function fillTheSelect(select, objects) {
+    if(objects){
+        objects.forEach(function (object, objectNum) {
+            select.append($('<option value="' + objectNum + '">' + object.name + '</option>'));
+        })
+    }
+    else{
+        console.log('Невозможно заполнить список ' + select.attr('name') + '. Данные для заполнения не получены.');
+    }
+}
+
+function selectChannels(channels) {
+    channels.forEach(function (channel, i, channels) {
+        $('[name=channels] :nth-child(' + (parseInt(channel) + 1) + ')').prop("selected", "selected");
+    })
+};
+
+function getChannelsProp(channels, requiredChannelNumsArr) {
+    var channelsProp = [];
+    requiredChannelNumsArr.forEach(function (channelNum) {
+        var channelProp = channels[channelNum];
+        channelProp['id'] = channelNum;
+        channelsProp.push(channels[channelNum]);
+    })
+
+    return channelsProp;
 }

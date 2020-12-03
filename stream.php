@@ -12,8 +12,8 @@
 <script src='js/libraries/anychart/anychart-ui.min.js'></script>
 
 
-<script src='js/chart/functions.js'></script>
 <script src='js/stream/main.js'></script>
+<script src='js/stream/mikRegistratorFileParsers.js'></script>
 <script src='js/stream/functions.js'></script>
 
 

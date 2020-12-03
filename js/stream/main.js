@@ -8,7 +8,6 @@ $(document).ready(function (){
 
     //create chart
     var chart = configChart(anychart.stock());
-    var plot = chart.plot();
     chart.container(containerId);
     chart.draw();
 
@@ -45,7 +44,7 @@ $(document).ready(function (){
         .then(channelData => {
             if (channelData){     //ИСПРАВИТЬ! Если мало точек на момент запуска - вылетает в else
                 dataTable.addData(channelData);
-                addSeries(plot, dataTable, channelsProp)
+                addSeries(chart.plot(), dataTable, channelsProp)
                     .then(() => {
                         $(".controlItem").prop("disabled", false);
                         preloader.visible(false);
