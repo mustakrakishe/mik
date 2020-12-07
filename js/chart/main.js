@@ -1,6 +1,5 @@
 $(document).ready(function (){
     var containerId = 'chart';
-    var displayedPointsCount = $('#displayedInterval').val();
     
     anychart.exports.server("http://localhost:2000");
     anychart.format.inputLocale('ru-ru');
@@ -43,6 +42,7 @@ $(document).ready(function (){
     parseArhFile(dataArh_path, activeChannels, firstSecond, lastSecond)
         .then(channelData => {
             if (channelData){     //ИСПРАВИТЬ! Если мало точек на момент запуска - вылетает в else
+                console.log(channelData);
                 dataTable.addData(channelData);
                 addSeries(chart.plot(), dataTable, channelsProp)
                     .then(() => {
@@ -50,7 +50,7 @@ $(document).ready(function (){
                         preloader.visible(false);
 
                         var lastAddedPointTime = channelData[channelData.length - 1][0]; //php возвращает timestamp в "с", а js работает с timestamp в "мс"
-                        // var streamTimer = startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime);
+                        var streamTimer = startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime);
                     })
             }
             else{

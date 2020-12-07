@@ -29,7 +29,7 @@ function configChart(chart){
     plot.xAxis().labels(false);
     plot.xAxis().background().enabled(true).stroke('none').fill('none');
     plot.xAxis().background().topStroke('1 black');
-    chart.xScale().ticksCount(displayedInterval);
+    chart.xScale().ticksCount(60);
     chart.xScale('scatter');
 
     

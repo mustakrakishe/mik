@@ -4,8 +4,9 @@
 <link rel="stylesheet" href="css/anychart/anychart-ui.min.css">
 <link rel="stylesheet" href="css/chart.css">
 
-<script src='js/chart/functions.js'></script>
 <script src='js/chart/main.js'></script>
+<script src='js/chart/mikRegistratorFileParsers.js'></script>
+<script src='js/chart/functions.js'></script>
 
 <script src='js/libraries/anychart/ru-ru.js'></script>
 <script src='js/libraries/anychart/anychart-core.min.js'></script>
