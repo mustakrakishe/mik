@@ -4,16 +4,17 @@
 <link rel="stylesheet" href="css/anychart/anychart-ui.min.css">
 <link rel="stylesheet" href="css/chart.css">
 
-<script src='js/chart/main.js'></script>
-<script src='js/chart/mikRegistratorFileParsers.js'></script>
-<script src='js/chart/functions.js'></script>
-
 <script src='js/libraries/anychart/ru-ru.js'></script>
 <script src='js/libraries/anychart/anychart-core.min.js'></script>
 <script src='js/libraries/anychart/anychart-stock.min.js'></script>
 <script src='js/libraries/anychart/anychart-exports.min.js'></script>
 <script src='js/libraries/anychart/anychart-base.min.js'></script>
 <script src='js/libraries/anychart/anychart-ui.min.js'></script>
+
+
+<script src='js/chart/main.js'></script>
+<script src='js/chart/mikRegistratorFileParsers.js'></script>
+<script src='js/chart/functions.js'></script>
 
 
 <script>
@@ -58,11 +59,19 @@
 <div id="tab-channels" class="content-wrap tab">
     <select id="channels" name="channels" class="controlItem" multiple></select>
 </div>
+<div id="tab-paths" class="content-wrap tab">
+    <p>ddmm.arh</p><input type="text" name="ddmmArh_path" id="ddmmArh_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\<?php echo date('dm') ?>.arh">
+    <p>display.dat</p><input type="text" name="displayDat_path" id="displayDat_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\display.dat">
+    <p>chanel.bas</p><input type="text" name="chanelBas_path" id="chanelBas_path" value="C:\Program Files (x86)\Microl\Mик-Регистратор\chanel.bas">
+    <p>Отображаемый интервал</p><input type="text" name="displayedInterval" id="displayedInterval" value="60">
+    <button id="streamButton" onclick="">Остановить стрим</button>
+</div>
 
 <div id="side-bar">
     <div id='shortcut-channels' class='shortcut'><p>Каналы</p></div>
+    <div id='shortcut-paths' class='shortcut'><p>Пути</p></div>
 </div>
 
 
-
 <?php require 'php/common/foot.php'; ?>
+

@@ -131,9 +131,9 @@
                     array_push($momentData, $writedValue);
                 }
                 ////////////////////////////////////////////
-                elseif(isset($channelData[count($channelData) - 1][$channelNum+1])){
-                    array_push($momentData, null);
-                }
+                // elseif(isset($channelData[count($channelData) - 1][$channelNum+1])){
+                //     array_push($momentData, null);
+                // }
                 ////////////////////////////////////////////
                 // if($readedValue != $EMPTY_VALUE_CODE){
                 //     $writedValue = round($readedValue, 3);
