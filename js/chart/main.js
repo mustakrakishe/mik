@@ -29,15 +29,16 @@ $(document).ready(function (){
     var activeChannels = displays[activeDisplay].channels;
     selectChannels(activeChannels);
     var channelsProp = getChannelsProp(channels, activeChannels);
+
+    var displayedMinutesRange = 1;
     
     preloader.visible(true);
     $(".controlItem").prop("disabled", true);
 
     var today = new Date();
     var lastSecond = today.getHours()*3600 + today.getMinutes()*60 + today.getSeconds();
-    var firstSecond = 0;//lastSecond - displayedPointsCount + 1;
+    var firstSecond = lastSecond - displayedMinutesRange * 60 + 1;
     if(firstSecond < 0) firstSecond = 0;
-    var channelData = [];
     
     parseArhFile(dataArh_path, activeChannels, firstSecond, lastSecond)
         .then(channelData => {
@@ -50,7 +51,7 @@ $(document).ready(function (){
                         preloader.visible(false);
 
                         var lastAddedPointTime = channelData[channelData.length - 1][0]; //php возвращает timestamp в "с", а js работает с timestamp в "мс"
-                        var streamTimer = startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime);
+                        startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime);
                     })
             }
             else{

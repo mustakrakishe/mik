@@ -113,7 +113,7 @@ function startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime
     var streamTimer = setInterval(function(){
         getFileLastModDate(dataArh_path)
         .then(fileLastModDate => {
-            fileLastModDate *= 1000;
+            fileLastModDate *= 1000;    //php возвращает время в с, а для js надо в мс
 
             if(fileLastModDate > lastAddedPointTime){
                 var lastAddedPointTime_obj = new Date(lastAddedPointTime);
