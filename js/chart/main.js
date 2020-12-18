@@ -41,26 +41,29 @@ $(document).ready(function (){
     if(firstSecond < 0) firstSecond = 0;
     
     parseArhFile(dataArh_path, activeChannels, firstSecond, lastSecond)
-        .then(channelData => {
-            if (channelData){     //ИСПРАВИТЬ! Если мало точек на момент запуска - вылетает в else
+        .then(
+            channelData => {
+                console.log('vse ok');
                 console.log(channelData);
                 dataTable.addData(channelData);
-                addSeries(chart.plot(), dataTable, channelsProp)
-                    .then(() => {
-                        $(".controlItem").prop("disabled", false);
-                        preloader.visible(false);
+                var promice = addSeries(chart.plot(), dataTable, channelsProp);
+                return promice.then(() => {
+                    return lastSecond;
+                });
+            },
 
-                        var lastAddedPointTime = channelData[channelData.length - 1][0]; //php возвращает timestamp в "с", а js работает с timestamp в "мс"
-                        startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime);
-                    })
+            () => {
+                console.log('Шось не то');
+                return null;
             }
-            else{
-                //var lastAddedPointTime = fileLastModDate;
-                //ИСПРАВИТЬ! Доработай проверку существования файлов .arh, .dat, .bas
-                console.log('Шось не то' + channelData);
-                preloader.visible(false);
-            }
-        });
+        ) 
+        .then(lastAddedPointSecond => {
+            $(".controlItem").prop("disabled", false);
+            preloader.visible(false);
+
+            lastAddedPointSecond = lastAddedPointSecond || 0;
+            startStream(dataArh_path, activeChannels, dataTable, lastAddedPointSecond);
+        })
 
     /*Отображение боковой панели*/
     $('.shortcut').click(function(){

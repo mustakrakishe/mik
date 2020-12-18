@@ -49,15 +49,20 @@ function configChart(chart){
 }
 
 function getFileLastModDate(path){
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         $.ajax({
             url: "../php/chart/ajaxHandlers/getFileLastModDate.php",
             data: {path: path},
             type: "GET",
             dataType: "json"
         })
-        .done(function (fileLastModDate) {
-            resolve (fileLastModDate);
+        .done(function (response) {
+            if(response.status){
+                resolve(response.data);
+            }
+            else{
+                reject();
+            }
         })
         .fail(function (xhr, status, errorThrown) {
             alert(
@@ -108,32 +113,28 @@ function addSeries(chart, dataTable, seriesProp) {
     })
 }
 
-function startStream(dataArh_path, activeChannels, dataTable, lastAddedPointTime){
+function startStream(dataArh_path, activeChannels, dataTable, lastAddedPointSecond){
 
     var streamTimer = setInterval(function(){
         getFileLastModDate(dataArh_path)
-        .then(fileLastModDate => {
-            fileLastModDate *= 1000;    //php возвращает время в с, а для js надо в мс
+            .then(fileLastModTimestamp => {
+                fileLastModTimestamp *= 1000;    //php возвращает время в с, а для js надо в мс
 
-            if(fileLastModDate > lastAddedPointTime){
-                var lastAddedPointTime_obj = new Date(lastAddedPointTime);
-                var fileLastModDate_obj = new Date(fileLastModDate);
-                var firstSecond = lastAddedPointTime_obj.getHours() * 3600 + lastAddedPointTime_obj.getMinutes() * 60 + lastAddedPointTime_obj.getSeconds() + 1;
-                var lastSecond = fileLastModDate_obj.getHours() * 3600 + fileLastModDate_obj.getMinutes() * 60 + fileLastModDate_obj.getSeconds();
-                
-                
+                var fileLastModDate = new Date(fileLastModTimestamp);
+                fileLastModSecond = fileLastModDate.getHours() * 3600 + fileLastModDate.getMinutes() * 60 + fileLastModDate.getSeconds();
 
-                parseArhFile(dataArh_path, activeChannels, firstSecond, lastSecond)
-                    .then(newData => {
-                        if(newData){
-                            console.log('new data: ' + newData);
-                            dataTable.addData(newData);
-                            dataTable.removeFirst(newData.length);                      //ИСПРАВИТЬ! Если на момент запуска было только 3 точки, то график продолжает отображать 3 точки
-                            lastAddedPointTime = newData[newData.length - 1][0];
-                        };
-                    });
-            };
-        });
+                if(fileLastModSecond > lastAddedPointSecond){
+                    parseArhFile(dataArh_path, activeChannels, lastAddedPointSecond, fileLastModSecond)
+                        .then(newData => {
+                            if(newData){
+                                console.log('new data: ' + newData);
+                                dataTable.addData(newData);
+                                dataTable.removeFirst(1);                      //ИСПРАВИТЬ! Если на момент запуска было только 3 точки, то график продолжает отображать 3 точки
+                                lastAddedPointSecond = fileLastModSecond;
+                            };
+                        });
+                };
+            });
 
         $('#streamButton').on('click', function(){
             $(this).unbind('click').text('Начать стрим');

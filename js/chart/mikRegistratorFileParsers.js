@@ -40,7 +40,7 @@ function getDisplays(path) {
 }
 
 function parseArhFile(path, channels, firstSecond, lastSecond) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         $.ajax({
             url: "../php/chart/ajaxHandlers/parseArhFile.php",
             data: {
@@ -53,7 +53,12 @@ function parseArhFile(path, channels, firstSecond, lastSecond) {
             dataType: "json"
         })
         .done(function (response) {
-            resolve(response);
+            if(response.status){
+                resolve(response.data);
+            }
+            else{
+                reject();
+            }
         })
         .fail(function (xhr, status, errorThrown) {
             console.log('channels: ' + channels);
@@ -64,6 +69,7 @@ function parseArhFile(path, channels, firstSecond, lastSecond) {
                 "Status: " + status + '\n' +
                 xhr
             );
+            reject();
         });
     })
 }

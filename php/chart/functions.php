@@ -126,22 +126,22 @@
             foreach($channelIds as $channelNum => $channelId){
                 fseek($fileHandler, $bytesPerServiceData + $bytesPerOneTimePoints * $pointNum + $BYTES_PER_VALUE * $channelId);
                 $readedValue = unpack('f*', fread($fileHandler, $BYTES_PER_VALUE), SEEK_SET)[1];
-                if($readedValue != $EMPTY_VALUE_CODE){
-                    $writedValue = round($readedValue, 3);
-                    array_push($momentData, $writedValue);
-                }
+                // if($readedValue != $EMPTY_VALUE_CODE){
+                //     $writedValue = round($readedValue, 3);
+                //     array_push($momentData, $writedValue);
+                // }
                 ////////////////////////////////////////////
                 // elseif(isset($channelData[count($channelData) - 1][$channelNum+1])){
                 //     array_push($momentData, null);
                 // }
                 ////////////////////////////////////////////
-                // if($readedValue != $EMPTY_VALUE_CODE){
-                //     $writedValue = round($readedValue, 3);
-                // }
-                // else{
-                //     $writingValue = null;
-                // }
-                // array_push($momentData, $writingValue);
+                if($readedValue != $EMPTY_VALUE_CODE){
+                    $writingValue = round($readedValue, 3);
+                }
+                else{
+                    $writingValue = null;
+                }
+                array_push($momentData, $writingValue);
             }
             if(count($momentData) > 1){
                 array_push($channelData, $momentData);

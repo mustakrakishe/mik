@@ -1,6 +1,18 @@
 <?php
-    $path = $_GET['path'];
-    require '../functions.php';
+    $status = false;
+    $data = null;
 
-    echo json_encode(getFileLastModDate($path));
+    $path = $_GET['path'];
+
+    if(file_exists($path)){
+        require '../functions.php';
+
+        $status = true;
+        $data = getFileLastModDate($path);
+    }
+
+    echo json_encode([
+        'status' => $status,
+        'data' => $data
+    ]);
 ?>
